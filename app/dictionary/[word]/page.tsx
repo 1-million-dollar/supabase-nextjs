@@ -55,7 +55,7 @@ export default async function Page({ params }: { params: {word: string} }) {
         }
     }
     
-    const phoneticsText = data_meaning[0]?.phonetics?.[0]?.text || "";
+    // const phoneticsText = data_meaning[0]?.phonetics?.[0]?.text || "";
     
     return (
         <div>
@@ -67,7 +67,7 @@ export default async function Page({ params }: { params: {word: string} }) {
                     {word}
                 </div>
                 <div className="flex flex-row items-center ml-auto">
-                    {phoneticsText}
+                    
                     <SpeakerWaveIcon className="w-8 p-1" />
                 </div>
             </div>
