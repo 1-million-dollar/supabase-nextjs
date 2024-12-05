@@ -7,14 +7,12 @@ import ProfilePhoto from './profilephoto'
 
 export default function Profile({ user }: { user: User | null }) {
   const supabase = createClient()
-  const [loading, setLoading] = useState(true)
   const [fullname, setFullname] = useState<string | null>(null)
   const [username, setUsername] = useState<string | null>(null)
   
   const [avatar_url, setAvatarUrl] = useState<string | null>(null)
     const getProfile = useCallback(async () => {
         try {
-          setLoading(true)
     
           const { data, error, status } = await supabase
             .from('profiles')
@@ -36,7 +34,7 @@ export default function Profile({ user }: { user: User | null }) {
         } catch (error) {
           console.log(error)
         } finally {
-          setLoading(false)
+      
         }
       }, [user, supabase])
     

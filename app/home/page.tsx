@@ -1,4 +1,4 @@
-import DictionarySearch from '../lib/dictionarysearch'
+
 import Poster from '../ui/poster'
 import SearchBox from '../ui/searchbox'
 

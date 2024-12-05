@@ -34,6 +34,10 @@ export default async function Page({ params }: { params: {word: string} }) {
         .select('userID')
         .eq('word', word);
 
+    if (error) {
+        console.log(error)
+    }
+
     if (data && data[0]?.userID === user?.id) {
         console.log('Duplicate found. Record already exists.', data);
     } else {

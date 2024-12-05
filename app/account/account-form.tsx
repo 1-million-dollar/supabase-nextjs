@@ -77,6 +77,7 @@ export default function AccountForm({ user }: { user: User | null }) {
       console.log(error)
     } catch (error) {
       alert('Error updating the data!')
+      console.log(error)
     } finally {
       setLoading(false)
     }

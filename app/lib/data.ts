@@ -26,7 +26,7 @@ export async function addSearchedWord(word: string) {
     const totalQuestions = await totalNoofQuestions()
 
     if(totalQuestions) {
-        let options = []
+        const options = []
         let i=2
         while(i > -1) {
             const data = await fetchMeanings(Math.floor(Math.random()*totalQuestions + 1))

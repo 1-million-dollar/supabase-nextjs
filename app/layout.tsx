@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+
 import '@/app/ui/global.css';
 import SideNav from "./ui/sidenav";
 
