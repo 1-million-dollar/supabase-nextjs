@@ -25,7 +25,7 @@ type Definition = {
 
 export default async function Page({ params }: { params: {word: string} }) {
 
-    const {word} = await params
+    const {word} = params
     const data_meaning = await searchMeanings(word)
     if (!data_meaning || data_meaning.length === 0 || data_meaning.title === "No Definitions Found") {
         return notFound();
