@@ -151,7 +151,7 @@ export async function fetchRapidQuestions() {
 
 // this function returns the array of words that the users have searched during the past
 export async function fetchUserWords(userID: string) {
-    let words = []
+    let words: string[] = []
 
     const supabase = createClient()
     const {data, error} = await supabase
@@ -163,14 +163,14 @@ export async function fetchUserWords(userID: string) {
         return []
     }
     if (data) {
-       words = data.map((item: { word: any }) => item.word)
+       words = data.map((item: { word: string }) => item.word)
     }
     return words
 } 
 
 
 // this function fetches review questions 
-export async function fetchReviewQuestions(words: any[]) {
+export async function fetchReviewQuestions(words: string[]) {
     const supabase = createClient()
     let i: number = 0
     const questions = []
