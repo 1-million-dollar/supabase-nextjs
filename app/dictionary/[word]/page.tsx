@@ -10,7 +10,17 @@ import { notFound } from "next/navigation";
 
 import { SpeakerWaveIcon } from "@heroicons/react/24/solid";
 
-
+type Definition = {
+    definition: string;
+    synonyms?: string;
+    antonyms?: string;
+    example?: string;
+  };
+  
+  type Meaning = {
+    partOfSpeech: string;
+    definitions: Definition[];
+  };
 
 
 export default async function Page({ params }: { params: {word: string} }) {
@@ -73,16 +83,16 @@ export default async function Page({ params }: { params: {word: string} }) {
             </div>
 
             
-            {data_meaning[0].meanings.map((meaning: any, index: number) => (
+            {data_meaning[0].meanings.map((meaning: Meaning, index: number) => (
                 <div key={index} className="flex flex-col gap-4">
-                    {meaning.definitions.map((definition: any, defindex: number) => (
+                    {meaning.definitions.map((definition: Definition, defindex: number) => (
 
                         <Meanings key={defindex} 
                             pos={meaning.partOfSpeech} 
                             def={definition.definition}
-                            syn={definition.synonyms}
-                            ant={definition.antonyms}
-                            example={definition.example}
+                            syn={definition.synonyms ?? ""}
+                            ant={definition.antonyms ?? ""}
+                            example={definition.example ?? ""}
                         />
                 
                     ))}
