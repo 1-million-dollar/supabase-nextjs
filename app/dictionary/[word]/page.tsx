@@ -1,20 +1,26 @@
 
 
 import WordMeaning from '@/app/ui/wordmeaning';
+import { createClient } from "@/utils/supabase/server";
 
   
 
-export default function Page() {
+export default async function Page({params} : {params : {word : string}}) {
    
-    const word = "brown"
+    const word = await (params.word)
 
+    const supabase = await createClient()
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
-  
+  if (user)
 
   return(
     <div>
-        <WordMeaning word={word} />
+        <WordMeaning word={word}
+            user={user} />
     </div>
   )
 }

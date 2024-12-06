@@ -1,9 +1,12 @@
 import { notFound } from "next/navigation";
 import { addSearchedWord, searchMeanings } from "../lib/data";
-import { createClient } from "@/utils/supabase/client";
+import { type User } from '@supabase/supabase-js'
+
 import SearchBox from "./searchbox";
 import { SpeakerWaveIcon } from "@heroicons/react/16/solid";
+
 import Meanings from "./meanings";
+import { createClient } from "@/utils/supabase/client";
 
 type Definition = {
     definition: string;
@@ -18,18 +21,17 @@ type Definition = {
   };
 
 
-export default async function WordMeaning({ word }: { word: string }) {
+export default async function WordMeaning({ word, user }: { word: string, user: User }) {
+
+    const supabase = createClient()
     const data_meaning = await searchMeanings(word)
     if (!data_meaning || data_meaning.length === 0 || data_meaning.title === "No Definitions Found") {
         return notFound();
       }
 
-    const supabase = createClient()
-    const {
-      data: { user },
-    } = await (await supabase).auth.getUser()
     
-    //console.log(user?.id)
+    
+    console.log(user?.id)
 
       
     const { data, error } = await (await supabase)
