@@ -72,7 +72,7 @@ export default async function WordMeaning({ word, user }: { word: string, user: 
                     {word}
                 </div>
                 <div className="flex flex-row items-center ml-auto">
-                    {phoneticsText ?? ""}
+                    {phoneticsText}
                     <SpeakerWaveIcon className="w-8 p-1" />
                 </div>
             </div>
