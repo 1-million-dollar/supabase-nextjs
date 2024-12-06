@@ -4,9 +4,9 @@ import WordMeaning from '@/app/ui/wordmeaning';
 
   
 
-export default function Page({params} : {params: { word: string}}) {
+export default function Page() {
    
-    const word = params.word; 
+    const word = "brown"
 
 
 
