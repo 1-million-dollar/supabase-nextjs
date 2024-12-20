@@ -3,6 +3,7 @@
 import '@/app/ui/global.css';
 
 import SideNav from './ui/sidenav';
+import { Analytics } from "@vercel/analytics/react"
 
 export default function RootLayout({
   children,
@@ -28,6 +29,7 @@ export default function RootLayout({
 
           <div className="flex-grow md:overflow-y-auto">
             {children}
+            <Analytics />
           </div>
 
         </div>

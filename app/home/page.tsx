@@ -63,7 +63,7 @@ export default async function Page() {
           </div>
           
         </div>
-        <div className='p-2'>
+        <div className='p-1'>
          <div className='flex-row justify-center mb-10 border-2 rounded-full border-black items-center p-2 hidden md:block'>
           Search...
          </div>
