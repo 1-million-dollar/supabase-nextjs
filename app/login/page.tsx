@@ -41,7 +41,7 @@ export default function LoginPage() {
         <BottomGradient />
       </button>
       <LabelInputContainer className="mb-4 mt-4">
-        <Label>If you don't have an account</Label>
+        <Label htmlFor="message">If you don't have an account</Label>
       </LabelInputContainer>
 
       <Link href='/signup'>

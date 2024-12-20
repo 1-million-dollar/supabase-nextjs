@@ -251,4 +251,7 @@ export async function getLearners() {
     if(data!== undefined) {
         return data
     }
+    if (error) {
+        console.log(error)
+    }
 }

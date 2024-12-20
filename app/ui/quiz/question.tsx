@@ -6,7 +6,7 @@ import { createClient } from '@/utils/supabase/client'
 import { UpdateScore } from "@/app/lib/data";
 
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect } from "react";
 
 
 
@@ -22,7 +22,7 @@ type QuestionType = {
 
 export default function Question({questions, user} : {questions: QuestionType[], user: User | null}) {
 
-    const supabase = createClient()
+    
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [score, setScore] = useState(0);
     const [timeLeft, setTimeLeft] = useState(20);

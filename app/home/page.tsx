@@ -24,7 +24,7 @@ export default async function Page() {
     redirect("/")
   }
   else if(user) {
-    const {data, error} = await supabase
+    const { error } = await supabase
       .from('profiles')
       .update([{ last_sign_in: new Date() }])
       .eq('id', user?.id)

@@ -17,11 +17,11 @@ type LearnerType = {
 
 
 export default function Leaderboard() {
-    const supabase = createClient()
+    
     const [learners, setLearners] = useState<LearnerType[]>([]);
     const [loading, setLoading] = useState(true)
-    const [updateurl, setUpdateurl] = useState(true)
-    const url = ''
+ 
+    
     
    
     
@@ -42,9 +42,7 @@ export default function Leaderboard() {
             }
         } 
         fetchData()
-        const timeout = setTimeout(() => {
-            setUpdateurl(false)
-        }, 1000);
+       
     }, [])
 
     
@@ -74,12 +72,8 @@ export default function Leaderboard() {
                             
                             <th className="px-2 py-2">
                             <Link key={index} href={`/c/${learner.id}`}>
-                                {!updateurl ? (
-                                    <ProfilePhoto url={learner.avatar_url} size={35} />
-                                ) : (
-                                    <ProfilePhoto url={url} size={35} />
-                                )}
-                                </Link>
+                                <ProfilePhoto url={learner.avatar_url} size={35} />
+                            </Link>
                             </th>
                             <th className="text-left px-4 py-2">
                                 <Link key={index} href={`/c/${learner.id}`}>

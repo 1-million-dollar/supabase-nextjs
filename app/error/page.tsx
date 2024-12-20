@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function ErrorPage() {
     return (
       <div className="flex h-screen w-screen flex-col items-center justify-center bg-gray-100 text-gray-800">
@@ -6,12 +8,12 @@ export default function ErrorPage() {
         <p className="mt-2 text-sm text-gray-500">
           Sorry, the page you're looking for doesn't exist.
         </p>
-        <a
+        <Link
           href="/"
           className="mt-6 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
         >
           Go Back to Home
-        </a>
+        </Link>
       </div>
     );
   }
