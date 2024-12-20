@@ -16,7 +16,9 @@ export default function Meanings({key, pos, def, syn, ant, example}: {
     const toggleExpand = () => {
         setExpanded(!expanded);
       };
-    
+   //const formatedSyn = syn.join(', ')
+   // const formatedAnt = ant.join(', ')
+   console.log(syn)
 
     return (
         <div>

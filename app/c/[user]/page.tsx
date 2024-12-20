@@ -1,33 +1,33 @@
-import { createClient } from "@/utils/supabase/server"
-import { Suspense } from "react"
-import LoadingScreen from "../ui/loadingscreen"
-import ProfilePhoto from "../ui/profilephoto"
-import EditProfile from "../ui/editprofile"
-import SignOut from "../ui/signout"
-import { redirect } from "next/navigation"
-export default async function Page() {
-    const supabase = await createClient()
+import { createClient } from "@/utils/supabase/client";
+import ProfilePhoto from "@/app/ui/profilephoto";
+import LoadingScreen from "@/app/ui/loadingscreen";
+import { Suspense } from "react";
 
+import EditProfile from "@/app/ui/editprofile";
+import SignOut from "@/app/ui/signout";
+import { redirect } from "next/navigation";
+
+
+type Params = Promise<{ user: string }>
+
+
+
+
+export default async function Page(props: { params: Params }) {
+  const params = await props.params;
+  const user = params.user;
+ 
+
+    const supabase = createClient()   
     let url: string | null = null
-    let fullname, username, bio, createdAt, points, correct, wrong, id
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if(user) {
-    id = user.id
-  } else {
-    id = null
-  }
-
-  
+    let fullname, username, bio, createdAt, points, correct, wrong
 
     const {data, error} = await supabase
       .from('profiles')
       .select('username, full_name, avatar_url, points, correct, wrong, created_at, bio')
-      .eq('id', id)
+      .eq('id', user)
 
-      if (data) {
+    if (data) {
         username = data[0].username
         fullname = data[0].full_name
         url = data[0].avatar_url
@@ -42,21 +42,24 @@ export default async function Page() {
     }
     const date = new Date(createdAt);
 
-    // Convert to IST using toLocaleString
-const options: Intl.DateTimeFormatOptions = {
-    timeZone: 'Asia/Kolkata',
-    year: 'numeric', // Use "numeric" instead of a string like "2023"
-    month: 'long',   // "long" for full month name
-    
-    
-  };
-  
-  const formattedDate = date.toLocaleString('en-IN', options);
 
-    
+// Convert to IST using toLocaleString
+const options: Intl.DateTimeFormatOptions = {
+  timeZone: 'Asia/Kolkata',
+  year: 'numeric', // Use "numeric" instead of a string like "2023"
+  month: 'long',   // "long" for full month name
+  
+  
+};
+
+const formattedDate = date.toLocaleString('en-IN', options);
+
+
+
     return (
-        <div>
-             <Suspense fallback={<LoadingScreen />}>
+      
+      <div>
+        <Suspense fallback={<LoadingScreen />}>
           <div className="absolute flex flex-col justify-center items-start w-full md:w-10/12 h-1/2">
             <div className="relative w-full h-1/2 bg-gray-400">
 
@@ -71,7 +74,7 @@ const options: Intl.DateTimeFormatOptions = {
               <p className="absolute left-0 p-5 mt-20 text-md font-mono w-max">{username}</p>
               <p className="absolute left-0 p-5 mt-28 text-md font-bold w-full h-full">{bio}</p>
               <p className="absolute left-0 p-5 mt-48 text-lg bg-gray-200 w-full">Joined {formattedDate}</p>
-              <EditProfile id={id} />
+              <EditProfile id={user} />
              
             </div>
             
@@ -96,14 +99,14 @@ const options: Intl.DateTimeFormatOptions = {
                 <p className="font-bold text-lg text-green-600">{correct}</p>
                 <p className="font-bold text-lg text-red-600">{wrong}</p>
               </div>
-              <SignOut id={id} />
+              <SignOut id={user} />
                
             </div>
           </div>
           
           
         </Suspense>
-
-        </div>
-    )
-}
+      </div>
+      
+    );
+  }

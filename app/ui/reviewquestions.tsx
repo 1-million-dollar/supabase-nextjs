@@ -1,11 +1,12 @@
 'use client'
 
-import { fetchUserWords } from '@/app/lib/data'
+import { fetchUserWords, UpdateFrequency } from '@/app/lib/data'
 import { fetchReviewQuestions } from '@/app/lib/data'
 import { type User } from '@supabase/supabase-js'
 
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
+
+import LoadingScreen from './loadingscreen'
 
 type QuestionType = {
     word: string;
@@ -25,6 +26,7 @@ export default function ReviewQuestions({user} : {user: User | null}) {
     const [result, setResult] = useState("");
     const [selectedOption, setSelectedOption] = useState<string | null>("");
     const [correctOption, setCorrectOption] = useState<string | null>("");
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         const fetchData = async () => {
@@ -36,6 +38,8 @@ export default function ReviewQuestions({user} : {user: User | null}) {
                 }
             } catch (error) {
               console.error('Error fetching data:', error);
+            } finally {
+                setLoading(false)
             }
           };
       
@@ -57,7 +61,8 @@ export default function ReviewQuestions({user} : {user: User | null}) {
 
       const handleNextQuestion = () => {
         if (selectedOption === questions[currentQuestion].answer) {
-          
+            if (user)
+            UpdateFrequency(user?.id, word)
           
         }
 
@@ -72,6 +77,15 @@ export default function ReviewQuestions({user} : {user: User | null}) {
             setIsQuizCompleted(true);
         }
     };
+
+    if (loading) {
+        return (
+            <div>
+                <LoadingScreen />
+            </div>
+            
+        )
+    }
 
     return (
         <div className="flex flex-col p-5 bg-white text-black rounded-lg shadow-[0px_87px_78px_-39px_rgba(0,0,0,0.4)] w-full">
@@ -116,13 +130,13 @@ export default function ReviewQuestions({user} : {user: User | null}) {
             ) : (
                 <div className="text-center">
                     <h2 className="text-3xl font-bold text-green-500 mb-4">Congratulations!</h2>
-                    <Link href='/dictionary'>
+                    
                         <button
+                            onClick={() => window.location.reload()}
                             className="mt-4 px-4 py-2 bg-green-600 text-white text-lg rounded"
                         >
-                            Learn more words..
+                            Revise more words..
                         </button>
-                    </Link>
                     
                 </div>
             

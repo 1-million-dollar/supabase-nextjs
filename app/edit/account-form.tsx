@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import { type User } from '@supabase/supabase-js'
 import Avatar from './avatar'
+import { redirect } from 'next/navigation'
 
 
 
@@ -15,9 +16,8 @@ export default function AccountForm({ user }: { user: User | null }) {
   const [username, setUsername] = useState<string | null>(null)
   
   const [avatar_url, setAvatarUrl] = useState<string | null>(null)
-  const [points, setPoints] = useState(0)
-  const [correct, setCorrect] = useState(0)
-  const [wrong, setWrong] = useState(0)
+  const [bio, setBio] = useState<string | null>(null)
+  
  
   const getProfile = useCallback(async () => {
     try {
@@ -25,26 +25,24 @@ export default function AccountForm({ user }: { user: User | null }) {
 
       const { data, error, status } = await supabase
         .from('profiles')
-        .select(`full_name, username, avatar_url, points, correct, wrong`)
+        .select(`full_name, username, avatar_url, points, correct, wrong, bio`)
         .eq('id', user?.id)
         .single()
 
       if (error && status !== 406) {
-        console.log(error)
-        throw error
+        redirect('/error')
+        
       }
 
       if (data) {
         setFullname(data.full_name)
         setUsername(data.username)
-        setPoints(data.points)
-        setCorrect(data.correct)
-        setWrong(data.wrong)
+        
         setAvatarUrl(data.avatar_url)
+        setBio(data.bio)
       }
     } catch (error) {
-      alert('Error loading user data!')
-      console.log(error)
+      redirect('/error')
     } finally {
       setLoading(false)
     }
@@ -74,10 +72,10 @@ export default function AccountForm({ user }: { user: User | null }) {
       })
       if (error) throw error
       alert('Profile updated!')
-      console.log(error)
     } catch (error) {
-      alert('Error updating the data!')
-      console.log(error)
+      //alert('Error updating the data!')
+      redirect('/error')
+      //console.log(error)
     } finally {
       setLoading(false)
     }
@@ -86,26 +84,30 @@ export default function AccountForm({ user }: { user: User | null }) {
   }
 
   return (
-    <div>
-      <div className=''>
-        <Avatar
+      <div className='p-2'>
+
+<div className='flex justify-center items-center rounded-lg p-2'>
+<Avatar
           uid={user?.id ?? null}
           url={avatar_url}
-          size={150}
+          size={300}
           onUpload={(url) => {
             setAvatarUrl(url)
             updateProfile({ fullname, username, avatar_url: url })
           } } />
+      </div>
+        
         {/* ... */}
+
 
         <div className='flex flex-col p-2'>
           <label className='font-bold' htmlFor="email">Email</label>
-          <input id="email" type="text" className='flex rounded-2xl border-2 border-black p-4 md:w-[400px]' value={user?.email} disabled />
+          <input id="email" type="text" className='flex rounded-2xl border-2 border-black p-4' value={user?.email} disabled />
         </div>
         <div className='flex flex-col p-2'>
           <label className='font-bold' htmlFor="fullName">Full Name</label>
           <input
-            className='flex rounded-2xl border-2 border-black p-4 md:w-[400px]'
+            className='flex rounded-2xl border-2 border-black p-4'
             id="fullName"
             type="text"
             value={fullname || ''}
@@ -114,39 +116,38 @@ export default function AccountForm({ user }: { user: User | null }) {
         <div className='flex flex-col p-2'>
           <label className='font-bold' htmlFor="username">Username</label>
           <input
-            className='flex rounded-2xl border-2 border-black p-4 md:w-[400px]'
+            className='flex rounded-2xl border-2 border-black p-4'
             id="username"
             type="text"
             value={username || ''}
             onChange={(e) => setUsername(e.target.value)} />
+             
         </div>
-        <div className='font-extrabold'>
-          <p>Points Earned: {points}</p>
-          <p>Accuracy: correct- {correct} wrong- {wrong}</p>
+        <div className='flex flex-col p-2'>
+          <label className='font-bold' htmlFor="username">Bio</label>
+          <input
+            className='flex rounded-2xl border-2 border-black p-4'
+            id="username"
+            type="text"
+            value={bio || ''}
+            onChange={(e) => setBio(e.target.value)} />
+             
         </div>
-          <div className='flex flex-row items-center p-2'>
-        <div>
-          <button
-            className="flex rounded-2xl p-4 border-2 border-green-800 bg-green-400 mr-10"
-            onClick={() => updateProfile({ fullname, username, avatar_url })}
-            disabled={loading}
-          >
-            {loading ? 'Loading ...' : 'Update'}
-          </button>
-        </div>
-
-        <div>
-          <form action="/auth/signout" method="post">
-            <button className="flex rounded-2xl p-4 border-2 border-red-800 bg-red-400" type="submit">
-              Sign out
+       
+        <div className='flex flex-row items-center p-2'>
+          <div>
+            <button
+              className="flex rounded-2xl p-4 border-2 border-green-800 bg-green-400"
+              onClick={() => updateProfile({ fullname, username, avatar_url })}
+              disabled={loading}
+            >
+              {loading ? 'Loading ...' : 'Update'}
             </button>
-          </form>
+          </div>
         </div>
-        </div>
+        
       </div>
-    <div>
-      </div>
-      </div>
+
 
     
   )

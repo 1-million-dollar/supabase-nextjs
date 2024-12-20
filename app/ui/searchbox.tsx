@@ -1,26 +1,57 @@
 "use client";
 
-import Link from "next/link"
+
 
 import { useState } from "react"
 
+import { redirect } from "next/navigation";
+
+
+import { PlaceholdersAndVanishInput } from "./aceternity/placeholders-and-vanish-input";
+
 export default function SearchBox() {
     const [ word, setWord ] = useState('')
+
+    const placeholders = [
+      "creping",
+  "crepe",
+  "arguable",
+  "argufier",
+  "coreless",
+  "cheapish",
+  "beer can",
+  "yard",
+  "windrow",
+  "amphoric",
+  "amianth",
+  "amidol",
+  "briar",
+  "chatting",
+  "envoy",
+  "degener"
+    ];
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setWord(e.target.value)
+    };
+    const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      if (word){
+        redirect(`/dictionary/${word}`)
+      }
+      
+    };
+
     return (
-        <form>
-            <div className='flex flex-row items-center space-x-2'>
-        <input
-          type="text"
-          value={word}
-          onChange={(e) => setWord(e.target.value)}
-          className='flex rounded-2xl border-2 border-black p-4 md:w-[400px]'
-          placeholder="Enter a word"
-        />
-        <Link href={`/dictionary/${word}`}>
-            <button type="submit" className='flex rounded-2xl p-4 border-2 border-green-800 bg-green-400'>Search</button>
-        </Link>
+        
+            <div className="w-full h-max mt-10">
+              <PlaceholdersAndVanishInput
+                placeholders={placeholders}
+                onChange={handleChange}
+                onSubmit={onSubmit}
+              />
        
-      </div>
-        </form>
+            </div>
+        
     )
 }

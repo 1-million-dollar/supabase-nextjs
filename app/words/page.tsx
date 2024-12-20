@@ -3,6 +3,9 @@ import { fetchUserWords } from '../lib/data'
 import { createClient } from '@/utils/supabase/server'
 import Profile from '../ui/profile'
 import Link from 'next/link'
+import { Suspense } from 'react'
+import LoadingScreen from '../ui/loadingscreen'
+import { redirect } from 'next/navigation'
 
 
 export default async function Page() {
@@ -14,6 +17,9 @@ export default async function Page() {
         data: { user },
     } = await supabase.auth.getUser()
 
+    if (!user) {
+        redirect('/login')
+    }
 
     if (user?.id) {
         words = await fetchUserWords(user?.id)
@@ -23,14 +29,15 @@ export default async function Page() {
     
     
     return (
-        <div>
+        <div><Suspense fallback={<LoadingScreen />}>
             <div>
+            <div className='p-2'>
                 <Profile user={user} />
             </div>
             
-          <div>
+          <div className='flex flex-col mb-24 md:mb-0 p-2'>
             {words?.map((word, i) => (
-                <Link key={i} href={`/dictionary/${word}`}>
+                <Link key={i} href={`/dictionary/${word}`} className='flex w-max'>
                     <div key={i} className='h-full w-max bg-green-200 p-5 mb-2 rounded-2xl'>
                         {word}
                     </div>
@@ -38,6 +45,8 @@ export default async function Page() {
                 
             ))}
           </div>
+          </div>
+          </Suspense>
         </div>
         
     )

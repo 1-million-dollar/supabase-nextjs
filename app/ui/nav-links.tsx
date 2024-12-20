@@ -1,6 +1,8 @@
 'use client';
 import Link from "next/link";
 
+
+
 import { HomeIcon,GlobeAltIcon,BookmarkIcon,QuestionMarkCircleIcon,UserIcon } from "@heroicons/react/24/solid";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
@@ -11,10 +13,16 @@ const links = [
     {name: 'DIctionary', href: '/dictionary', icon: GlobeAltIcon},
     {name: 'Words', href: '/words', icon: BookmarkIcon },
     {name: 'Quiz', href: '/quiz', icon: QuestionMarkCircleIcon },
-    {name: 'Account', href: '/account', icon: UserIcon }    
+    {name: 'Account', href: `/account`, icon: UserIcon }    
 ]
 
+
+
 export default function NavLinks() {
+
+   
+    
+   
     const pathname = usePathname();
 
     

@@ -30,19 +30,20 @@ export default function Profile({ user }: { user: User | null }) {
             setUsername(data.username)
             
             setAvatarUrl(data.avatar_url)
+            
           }
         } catch (error) {
           console.log(error)
-        } finally {
-      
         }
       }, [user, supabase])
     
       useEffect(() => {
         getProfile()
       }, [user, getProfile])
+
+      
     return (
-        <div className='flex flex-row items-center p-2 mb-5'>
+        <div className='flex flex-row items-center p-2 mb-2'>
             <ProfilePhoto url={avatar_url}
           size={50} />
             <div className='flex flex-col justify-center p-2'>

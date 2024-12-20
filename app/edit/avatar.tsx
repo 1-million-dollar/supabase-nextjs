@@ -64,27 +64,27 @@ export default function Avatar({
   }
 
   return (
-    <div className="rounded-lg bg-gray-50 p-4 md:p-6">
+    <div>
       {avatarUrl ? (
         <Image
           width={size}
           height={size}
           src={avatarUrl}
+          className='rounded-full'
           alt="Avatar"
-          className="avatar image"
+          
           style={{ height: size, width: size }}
         />
       ) : (
-        <div className="avatar no-image" style={{ height: size, width: size }} />
+        <div style={{ height: size, width: size }} />
       )}
-      <div style={{ width: size }}>
-        <label className="button primary block" htmlFor="single">
+      <div>
+        <label className='font-bold text-lg' htmlFor="single">
           {uploading ? 'Uploading ...' : 'Upload'}
         </label>
         <input
           style={{
             visibility: 'hidden',
-            position: 'absolute',
           }}
           type="file"
           id="single"

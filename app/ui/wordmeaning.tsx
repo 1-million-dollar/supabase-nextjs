@@ -3,7 +3,7 @@ import { addSearchedWord, searchMeanings } from "../lib/data";
 import { type User } from '@supabase/supabase-js'
 
 import SearchBox from "./searchbox";
-import { SpeakerWaveIcon } from "@heroicons/react/16/solid";
+import AudioPlayer from "./audioplayer";
 
 import Meanings from "./meanings";
 import { createClient } from "@/utils/supabase/client";
@@ -61,10 +61,16 @@ export default async function WordMeaning({ word, user }: { word: string, user: 
     }
     
     const phoneticsText = data_meaning[0]?.phonetics?.[0]?.text || "";
+
+    
+    const audio = data_meaning[0]?.phonetics?.[0]?.audio || undefined
+    
+    
+      
     
     return (
-        <div>
-            <div className="flex justify-center p-2 md:p-5">
+        <div className="mb-24 md:mb-0">
+            <div className="flex justify-center p-5">
                 <SearchBox />
             </div>
             <div className="flex items-center p-2 md:p-5">
@@ -73,11 +79,11 @@ export default async function WordMeaning({ word, user }: { word: string, user: 
                 </div>
                 <div className="flex flex-row items-center ml-auto">
                     {phoneticsText}
-                    <SpeakerWaveIcon className="w-8 p-1" />
+                    <AudioPlayer audio={audio} />
                 </div>
             </div>
 
-            
+            <div className="p-2">
             {data_meaning[0].meanings.map((meaning: Meaning, index: number) => (
                 <div key={index} className="flex flex-col gap-4">
                     {meaning.definitions.map((definition: Definition, defindex: number) => (
@@ -85,14 +91,19 @@ export default async function WordMeaning({ word, user }: { word: string, user: 
                         <Meanings key={defindex} 
                             pos={meaning.partOfSpeech} 
                             def={definition.definition}
-                            syn={definition.synonyms ?? ""}
-                            ant={definition.antonyms ?? ""}
+                            syn={Array.isArray(definition.synonyms) && definition.synonyms.length > 0
+                                ? definition.synonyms.join(', ')
+                                : ""}
+                              ant={Array.isArray(definition.antonyms) && definition.antonyms.length > 0
+                                ? definition.antonyms.join(', ')
+                                : ""}
                             example={definition.example ?? ""}
                         />
                 
                     ))}
                 </div>
             ))}
+            </div>
         </div>
     )
 

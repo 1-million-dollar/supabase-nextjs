@@ -10,12 +10,16 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.1.5",
+    "@radix-ui/react-label": "^2.1.0",
     "@supabase/ssr": "^0.5.1",
     "@supabase/supabase-js": "^2.45.6",
+    "@tabler/icons-react": "^3.24.0",
     "clsx": "^2.1.1",
+    "framer-motion": "^11.13.1",
     "next": "15.0.3",
     "react": "19.0.0-rc-69d4b800-20241021",
-    "react-dom": "19.0.0-rc-69d4b800-20241021"
+    "react-dom": "19.0.0-rc-69d4b800-20241021",
+    "tailwind-merge": "^2.5.5"
   },
   "devDependencies": {
     "@types/node": "^20",

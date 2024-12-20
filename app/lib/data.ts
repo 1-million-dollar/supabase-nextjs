@@ -158,6 +158,7 @@ export async function fetchUserWords(userID: string) {
         .from("words")
         .select(`word`)
         .eq('userID', userID)
+        .order('frequency', { ascending: true})
 
     if (error) {
         return []
@@ -172,9 +173,11 @@ export async function fetchUserWords(userID: string) {
 // this function fetches review questions 
 export async function fetchReviewQuestions(words: string[]) {
     const supabase = createClient()
-    let i: number = 0
+    let i: number = 0, n = 10
     const questions = []
-    while (i < words.length) {
+    if (words.length < 10)
+        n = words.length
+    while (i < n) {
         const {data, error} = await supabase
             .from('question')
             .select('word, answer, option_1, option_2, option_3, option_4')
@@ -191,6 +194,61 @@ export async function fetchReviewQuestions(words: string[]) {
 
     return questions
 }
+// this function updates the score of the user
+export async function UpdateScore(userID: string, score: number,correct: number, wrong: number) {
+    const supabase = createClient()
 
+    let newPoints, newCorrect, newWrong
+    const {data, error} = await supabase.from('profiles').select('points, correct, wrong').eq('id', userID)
+    
+    if (data) {
+         newPoints = data[0].points + score
+         newCorrect = data[0].correct + correct
+         newWrong = data[0].wrong + wrong
+        
+        console.log(error)
+    }
+    await supabase
+            .from('profiles')
+            .update({'points': newPoints, 'correct': newCorrect, 'wrong': newWrong})
+            .eq('id', userID)
+    
+}
 
+// this function updates the frequency of the words correct by the user
+export async function UpdateFrequency(userID: string, word: string) {
+    const supabase = createClient()
 
+    const {data} = await supabase
+        .from('words')
+        .select('frequency')
+        .eq('userID', userID)
+        .eq('word', word)
+
+    
+    if (data) {
+        const new_freq = data[0].frequency + 1
+        
+        const {error} = await supabase
+            .from('words')
+            .update({'frequency': new_freq})
+            .eq('userID', userID)
+            .eq('word', word)
+        console.log(error)
+    }
+
+}
+
+export async function getLearners() {
+    const supabase = createClient()
+
+    const {data, error} = await supabase
+                    .from('profiles')
+                    .select('id, full_name, avatar_url, points, correct, wrong')
+                    .order('points', {ascending : false})
+                    .limit(5)
+    
+    if(data!== undefined) {
+        return data
+    }
+}

@@ -1,10 +1,13 @@
 "use client";
 
 import Confetti from "./confetti";
+import { type User } from '@supabase/supabase-js'
+import { createClient } from '@/utils/supabase/client'
+import { UpdateScore } from "@/app/lib/data";
 
 
-import { useState, useEffect } from "react";
-import { fetchRapidQuestions } from "@/app/lib/data"
+import { useState, useEffect, Suspense } from "react";
+
 
 
 type QuestionType = {
@@ -17,35 +20,23 @@ type QuestionType = {
   };
 
 
-export default function Question() {
+export default function Question({questions, user} : {questions: QuestionType[], user: User | null}) {
 
-    
+    const supabase = createClient()
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [score, setScore] = useState(0);
-    const [timeLeft, setTimeLeft] = useState(10);
+    const [timeLeft, setTimeLeft] = useState(20);
     const [isQuizCompleted, setIsQuizCompleted] = useState(false);
     const [result, setResult] = useState("");
     const [selectedOption, setSelectedOption] = useState<string | null>("");
-    const [questions, setQuestions] = useState<QuestionType[]>([]);
+    const [correct, setCorrect] = useState(0)
+    const [wrong, setWrong] = useState(0)
+    const [notupdated, setNotUpdated] = useState(true)
+    
     const [correctOption, setCorrectOption] = useState<string | null>("");
+    
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                console.log('Fetching data...');
-                const questions = await fetchRapidQuestions()
-                
-                setQuestions(questions)
-                
-                
-                
-            } catch (error) {
-              console.error('Error fetching data:', error);
-            }
-          };
-      
-          fetchData();
-    }, [])
+    
 
     const data = questions[currentQuestion]
           
@@ -54,7 +45,6 @@ export default function Question() {
 
     const options = [data?.option_1, data?.option_2, data?.option_3, data?.option_4]
     
-
     
     useEffect(() => {
         if (timeLeft > 0) {
@@ -75,24 +65,33 @@ export default function Question() {
       const handleNextQuestion = () => {
         if (selectedOption === questions[currentQuestion].answer) {
           setScore(score + 10);
-          
+          setCorrect(correct + 1)
+        }
+        else if(selectedOption !== questions[currentQuestion].answer && selectedOption !== "") {
+          setWrong(wrong + 1)
         }
 
         setSelectedOption("");
         setResult("")
-        setTimeLeft(10);
+        setTimeLeft(20);
 
 
         if (currentQuestion + 1 < questions.length) {
             setCurrentQuestion(currentQuestion + 1);
         } else {
-            setIsQuizCompleted(true);
+          
+            setIsQuizCompleted(true)
             
+           
         }
     };
   
 
-    
+    if (isQuizCompleted && notupdated) {
+      if(user)
+      UpdateScore(user?.id, score, correct, wrong)
+      setNotUpdated(false)
+    }
        
     
 
@@ -155,7 +154,7 @@ export default function Question() {
                 <div className="p-1 mb-10">
                     <div
                         className="bg-blue-500 h-2 rounded-full transition-width duration-1000 ease-linear"
-                        style={{ width: `${(timeLeft/10)*100}%` }}
+                        style={{ width: `${(timeLeft/20)*100}%` }}
                      ></div>
                 </div>
                 <div className="flex items-center justify-between">
@@ -209,6 +208,7 @@ export default function Question() {
                 </div>
             
             )}
+            
         </div>
     )
 }
