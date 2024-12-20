@@ -4,8 +4,11 @@ import * as React from "react";
 import { cn } from "@/app/lib/utils";
 import { useMotionTemplate, useMotionValue, motion } from "framer-motion";
 
+/* eslint-disable @typescript-eslint/no-empty-interface */
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {}
+/* eslint-enable @typescript-eslint/no-empty-interface */
+
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, ...props }, ref) => {

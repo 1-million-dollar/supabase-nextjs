@@ -6,7 +6,7 @@ export default function ErrorPage() {
         <h1 className="text-6xl font-bold">404</h1>
         <p className="mt-4 text-lg">Page Not Found</p>
         <p className="mt-2 text-sm text-gray-500">
-          Sorry, the page you're looking for doesn't exist.
+          Sorry, the page you&apos;re looking for doesn&apos;t exist.
         </p>
         <Link
           href="/"

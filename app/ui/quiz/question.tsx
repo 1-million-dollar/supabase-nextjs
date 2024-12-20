@@ -2,7 +2,7 @@
 
 import Confetti from "./confetti";
 import { type User } from '@supabase/supabase-js'
-import { createClient } from '@/utils/supabase/client'
+
 import { UpdateScore } from "@/app/lib/data";
 
 

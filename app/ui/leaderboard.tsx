@@ -1,6 +1,5 @@
 'use client'
 
-import { createClient } from "@/utils/supabase/client"
 import { useState, useEffect } from "react"
 import ProfilePhoto from "./profilephoto"
 import { getLearners } from "../lib/data"
