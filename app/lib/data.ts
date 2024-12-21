@@ -186,7 +186,7 @@ export async function fetchReviewQuestions(words: string[]) {
         if (error) {
             console.log(error)
         }
-        if (data) {
+        if (data && data[0].word !== "") {
             questions[i] = data[0]
         }
         i++
