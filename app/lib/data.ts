@@ -152,7 +152,7 @@ export async function fetchRapidQuestions() {
 // this function returns the array of words that the users have searched during the past
 export async function fetchUserWords(userID: string) {
     let words: string[] = []
-    // let createdAt: string[] = []
+    let createdAt: string[] = []
 
     const supabase = createClient()
     const {data, error} = await supabase
@@ -166,7 +166,7 @@ export async function fetchUserWords(userID: string) {
     }
     if (data) {
        words = data.map((item: { word: string }) => item.word)
-       // createdAt = data.map((item : {created_at: string}) => item.created_at)
+       createdAt = data.map((item : {created_at: string}) => item.created_at)
     }
     return words
 } 
@@ -277,4 +277,20 @@ export async function getQuestionId(word: string) {
     }
 
     return 0
+}
+
+export async function getWordTime(word : string) {
+    const supabase = createClient()
+    const { data , error } = await( await supabase)
+        .from('words')
+        .select('created_at')
+        .eq('word', word)
+
+    if (data) {
+        return (data)
+    }
+    if (error) {
+        console.log(error)
+        return null
+    }
 }

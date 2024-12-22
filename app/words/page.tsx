@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { Suspense } from 'react'
 import LoadingScreen from '../ui/loadingscreen'
 import { redirect } from 'next/navigation'
+import CreatedDate from '../ui/createddate'
 
 
 export default async function Page() {
@@ -25,9 +26,6 @@ export default async function Page() {
         words = await fetchUserWords(user?.id)
     }
     
-    
-    
-    
     return (
         <div><Suspense fallback={<LoadingScreen />}>
             <div>
@@ -39,7 +37,10 @@ export default async function Page() {
             {words?.map((word, i) => (
                 <Link key={i} href={`/dictionary/${word}`} className='flex w-max'>
                     <div key={i} className='h-full w-max bg-green-200 p-5 mb-2 rounded-2xl'>
-                        {word}
+                        <p className='text-lg font-bold'>{word}</p>
+                        
+                        <CreatedDate word = {word} />
+                        
                     </div>
                 </Link>
                 
@@ -51,3 +52,4 @@ export default async function Page() {
         
     )
 }
+
