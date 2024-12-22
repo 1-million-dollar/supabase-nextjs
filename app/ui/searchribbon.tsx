@@ -27,7 +27,7 @@ export default async function SearchRibbon() {
       <InfiniteMovingCards
         items={words}
         direction="left"
-        speed="fast"
+        speed="normal"
       />
     </div>
            
