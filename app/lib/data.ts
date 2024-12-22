@@ -166,7 +166,7 @@ export async function fetchUserWords(userID: string) {
     }
     if (data) {
        words = data.map((item: { word: string }) => item.word)
-       createdAt = data.map((item : {created_at: string}) => item.created_at)
+       // createdAt = data.map((item : {created_at: string}) => item.created_at)
     }
     return words
 } 
