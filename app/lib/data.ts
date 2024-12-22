@@ -152,11 +152,12 @@ export async function fetchRapidQuestions() {
 // this function returns the array of words that the users have searched during the past
 export async function fetchUserWords(userID: string) {
     let words: string[] = []
+    let createdAt: string[] = []
 
     const supabase = createClient()
     const {data, error} = await supabase
         .from("words")
-        .select(`word`)
+        .select(`word, created_at`)
         .eq('userID', userID)
         .order('frequency', { ascending: true})
 
@@ -165,6 +166,7 @@ export async function fetchUserWords(userID: string) {
     }
     if (data) {
        words = data.map((item: { word: string }) => item.word)
+       createdAt = data.map((item : {created_at: string}) => item.created_at)
     }
     return words
 } 

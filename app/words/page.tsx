@@ -10,7 +10,7 @@ import { redirect } from 'next/navigation'
 
 export default async function Page() {
     
-    let words
+    let words 
 
     const supabase = await createClient()
     const {

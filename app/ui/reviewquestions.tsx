@@ -98,6 +98,7 @@ export default function ReviewQuestions({user} : {user: User | null}) {
                 
                 <div className="flex items-center justify-between">
                     <p className="text-[rgb(49,49,49)] text-base font-extrabold leading-4">What is the meaning of {word} ?</p>
+                    
                 </div>
                 <div>
                     {options.map((option, index) => (
