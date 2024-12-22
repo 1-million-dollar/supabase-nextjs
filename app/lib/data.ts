@@ -173,7 +173,7 @@ export async function fetchUserWords(userID: string) {
 // this function fetches review questions 
 export async function fetchReviewQuestions(words: string[]) {
     const supabase = createClient()
-    let i: number = 0, n = 10
+    let i: number = 0, n = 10, j=0
     const questions = []
     if (words.length < 10)
         n = words.length
@@ -186,10 +186,14 @@ export async function fetchReviewQuestions(words: string[]) {
         if (error) {
             console.log(error)
         }
-        if (data && data[0].word !== "") {
-            questions[i] = data[0]
+        if (data) {
+            if (data[0] !== undefined) {
+                questions[j] = data[0]
+                j++
+            }
         }
         i++
+       
     }
 
     return questions
@@ -254,4 +258,21 @@ export async function getLearners() {
     if (error) {
         console.log(error)
     }
+}
+
+export async function getQuestionId(word: string) {
+    const supabase = createClient()
+    const { data, error } = await (await supabase)
+        .from('question')
+        .select('id')
+        .eq('word', word);
+
+    if (error) {
+        console.log(error)
+    }
+    if (data) {
+        return data
+    }
+
+    return 0
 }

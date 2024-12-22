@@ -35,6 +35,7 @@ export default function ReviewQuestions({user} : {user: User | null}) {
                     console.log('Fetching data...');
                     const words = await fetchUserWords(user?.id)
                     setQuestions(await fetchReviewQuestions(words))
+                    
                 }
             } catch (error) {
               console.error('Error fetching data:', error);
@@ -46,10 +47,14 @@ export default function ReviewQuestions({user} : {user: User | null}) {
           fetchData();
     }, [])
 
+    console.log(questions)
+
     const data = questions[currentQuestion]
-          
+
+  
     const word = data?.word
     const correctAnswer = data?.answer
+
 
     const options = [data?.option_1, data?.option_2, data?.option_3, data?.option_4]
 
@@ -68,8 +73,6 @@ export default function ReviewQuestions({user} : {user: User | null}) {
 
         setSelectedOption("");
         setResult("")
-        
-
 
         if (currentQuestion + 1 < questions.length) {
             setCurrentQuestion(currentQuestion + 1);

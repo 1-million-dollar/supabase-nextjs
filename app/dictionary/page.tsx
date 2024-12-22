@@ -4,40 +4,40 @@ import Link from "next/link";
 
 export default function Page() {
 
-    const addedWords = [  "Canis",
-  "three-dimensional printer",
-  "seggae",
-  "billboarding",
-  "yahoo",
-  "end-of-life",
-  "Triangulum Australe",
-  "hoopie",
-  "institutionalizing",
-  "stage time",
-  "pansori",
-  "bill of adventure",
-  "boi",
-  "de-age",
-  "windproof",
-  "speak-sing",]
+    const addedWords = [   "geolocator",
+        "tikanga",
+        "crepe",
+        "maknae",
+        "brown Windsor",
+        "unhackable",
+        "coreceptor",
+        "pansori",
+        "bronchiolitis obliterans",
+        "brandsolder",
+        "Calennig",
+        "419",
+        "frustrator",
+        "wizardy",
+        "snow angel",
+        "stage managing"]
 
       
-    const updatedWords = [ "cutter",
-  "Glagol",
-  "cut weed",
-  "wealsman",
-  "licking",
-  "chatting",
-  "argute",
-  "chat",
-  "fruition",
-  "text-pen",
-  "weely",
-  "banyan",
-  "slabby",
-  "stagese",
-  "estated",
-  "flaxie",]
+    const updatedWords = [  "LP",
+        "textuist",
+        "triceps",
+        "hurrick",
+        "braiser",
+        "brand new",
+        "estated",
+        "elfic",
+        "elf",
+        "specie",
+        "berserk",
+        "cut weed",
+        "barging",
+        "breeding",
+        "Cuts",
+        "chining"]
 
       
 
@@ -49,9 +49,9 @@ export default function Page() {
             <div className="flex flex-col justify-center mb-5 p-5 items-center text-center bg-gray-200 rounded-lg">
                 <p className="text-2xl mb-1"><b>Word of the day</b></p>
                 <div className="h-1 w-10 mb-3 bg-black"></div>
-                <p className="font-extrabold text-4xl mb-1">notchet</p>
+                <p className="font-extrabold text-4xl mb-1">palmy</p>
                 <p className="text-sm mb-3">verb</p>
-                <p className="text-md">Eastern England in later use. A small or insignificant thing or quantity.</p>
+                <p className="text-md">Triumphant, flourishing, successful.</p>
             </div>
             <div className="flex flex-col gap-10 md:gap-40 md:flex-row md:justify-center p-5 text-center bg-gray-200 rounded-lg">
                 <div className="flex flex-col justify-center items-center">

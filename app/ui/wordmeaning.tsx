@@ -4,6 +4,7 @@ import { type User } from '@supabase/supabase-js'
 
 import SearchBox from "./searchbox";
 import AudioPlayer from "./audioplayer";
+import { getQuestionId } from "../lib/data";
 
 import Meanings from "./meanings";
 import { createClient } from "@/utils/supabase/client";
@@ -29,11 +30,6 @@ export default async function WordMeaning({ word, user }: { word: string, user: 
         return notFound();
       }
 
-    
-    
-    console.log(user?.id)
-
-      
     const { data, error } = await (await supabase)
         .from('words')
         .select('userID')
@@ -43,8 +39,11 @@ export default async function WordMeaning({ word, user }: { word: string, user: 
         console.log(error)
     }
 
+    
+
     if (data && data[0]?.userID === user?.id) {
         console.log('Duplicate found. Record already exists.', data);
+        
     } else {
        
     const { error: insertError } = await (await supabase)
@@ -53,11 +52,15 @@ export default async function WordMeaning({ word, user }: { word: string, user: 
 
     if (insertError) {
         console.error('Error inserting data:', insertError.message);
-    } else {
+        }
+    }
+
+    const id = await getQuestionId(word)
+
+    if (id == 0) {
         addSearchedWord(word)
         console.log('Data inserted successfully.');
-        // create questions of the searched words
-        }
+    // create questions of the searched words
     }
     
     const phoneticsText = data_meaning[0]?.phonetics?.[0]?.text || "";

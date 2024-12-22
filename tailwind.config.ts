@@ -35,7 +35,9 @@ const config: Config = {
     animation: {
       scroll:
         "scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite",
+        spin: 'spin 1s linear infinite',
     },
+   
     keyframes: {
       scroll: {
         to: {
