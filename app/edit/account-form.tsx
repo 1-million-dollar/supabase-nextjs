@@ -60,6 +60,7 @@ export default function AccountForm({ user }: { user: User | null }) {
     username: string | null
     fullname: string | null
     avatar_url: string | null
+    bio: string | null
   }) {
     try {
       setLoading(true)
@@ -69,6 +70,7 @@ export default function AccountForm({ user }: { user: User | null }) {
         full_name: fullname,
         username,
         avatar_url,
+        bio,
         updated_at: new Date().toISOString(),
       })
       if (error) throw error
@@ -95,7 +97,7 @@ export default function AccountForm({ user }: { user: User | null }) {
           size={300}
           onUpload={(url) => {
             setAvatarUrl(url)
-            updateProfile({ fullname, username, avatar_url: url })
+            updateProfile({ fullname, username, avatar_url: url, bio })
           } } />
       </div>
         
@@ -140,7 +142,7 @@ export default function AccountForm({ user }: { user: User | null }) {
           <div>
             <button
               className="flex rounded-2xl p-4 border-2 border-green-800 bg-green-400"
-              onClick={() => updateProfile({ fullname, username, avatar_url })}
+              onClick={() => updateProfile({ fullname, username, avatar_url, bio })}
               disabled={loading}
             >
               {loading ? 'Loading ...' : 'Update'}
