@@ -39,7 +39,7 @@ export default async function Page() {
                     <div key={i} className='h-full w-max bg-green-200 p-5 mb-2 rounded-2xl'>
                         <p className='text-lg font-bold'>{word}</p>
                         
-                        <CreatedDate word = {word} />
+                        <CreatedDate word = {word} id={user?.id}/>
                         
                     </div>
                 </Link>

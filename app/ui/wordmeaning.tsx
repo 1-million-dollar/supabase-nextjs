@@ -30,6 +30,14 @@ export default async function WordMeaning({ word, user }: { word: string, user: 
         return notFound();
       }
 
+      const id = await getQuestionId(word)
+
+    if (id == 0) {
+        addSearchedWord(word)
+        console.log('Data inserted successfully.');
+    // create questions of the searched words
+    }
+
     const { data, error } = await (await supabase)
         .from('words')
         .select('userID')
@@ -55,13 +63,7 @@ export default async function WordMeaning({ word, user }: { word: string, user: 
         }
     }
 
-    const id = await getQuestionId(word)
-
-    if (id == 0) {
-        addSearchedWord(word)
-        console.log('Data inserted successfully.');
-    // create questions of the searched words
-    }
+    
     
     const phoneticsText = data_meaning[0]?.phonetics?.[0]?.text || "";
 

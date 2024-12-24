@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { getWordTime } from "../lib/data";
 
-export default function CreatedDate({ word }: { word: string }) {
+export default function CreatedDate({ word, id }: { word: string, id: string }) {
   const [time, setTime] = useState<string | null>(null);
   const [timeDifference, setTimeDifference] = useState("");
 
@@ -12,7 +12,7 @@ export default function CreatedDate({ word }: { word: string }) {
 
     const fetchTime = async () => {
       try {
-        const fetchedTime = await getWordTime(word);
+        const fetchedTime = await getWordTime(word, id);
 
         // Safely handle the response and extract the `created_at` timestamp
         if (fetchedTime && Array.isArray(fetchedTime) && fetchedTime.length > 0) {

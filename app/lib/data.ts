@@ -278,12 +278,13 @@ export async function getQuestionId(word: string) {
     return 0
 }
 
-export async function getWordTime(word : string) {
+export async function getWordTime(word : string, id: string) {
     const supabase = createClient()
     const { data , error } = await( await supabase)
         .from('words')
         .select('created_at')
         .eq('word', word)
+        .eq('userID', id)
 
     if (data) {
         return (data)
