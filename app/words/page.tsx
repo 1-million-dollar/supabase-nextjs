@@ -7,6 +7,11 @@ import { Suspense } from 'react'
 import LoadingScreen from '../ui/loadingscreen'
 import { redirect } from 'next/navigation'
 import CreatedDate from '../ui/createddate'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+    title: 'Saved words',
+  };
 
 
 export default async function Page() {

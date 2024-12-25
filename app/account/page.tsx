@@ -5,6 +5,13 @@ import ProfilePhoto from "../ui/profilephoto"
 import EditProfile from "../ui/editprofile"
 import SignOut from "../ui/signout"
 import { redirect } from "next/navigation"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: 'Account',
+};
+
+
 export default async function Page() {
     const supabase = await createClient()
 

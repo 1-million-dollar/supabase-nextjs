@@ -1,6 +1,11 @@
 import { redirect } from 'next/navigation'
 import AccountForm from './account-form'
 import { createClient } from '@/utils/supabase/server'
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Edit Profile',
+};
 
 
 

@@ -9,7 +9,11 @@ import Leaderboard from '../ui/leaderboard'
 import SearchRibbon from '../ui/searchribbon'
 import Link from 'next/link'
 import Image from 'next/image'
+import { Metadata } from 'next'
 
+export const metadata: Metadata = {
+  title: 'Home',
+};
 
 export default async function Page() {
 
