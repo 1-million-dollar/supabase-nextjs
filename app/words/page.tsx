@@ -37,6 +37,11 @@ export default async function Page() {
             <div className='p-2'>
                 <Profile user={user} />
             </div>
+            <div className='p-5'>
+            <Link href="/quiz/review">
+                <div className="flex justify-center items-center w-full h-10 mb-5 bg-green-400 text-black font-bold rounded-lg shadow-lg">Start quiz to revise your words...</div>
+            </Link>
+            </div>
             
           <div className='flex flex-col mb-24 md:mb-0 p-2'>
             {words?.map((word, i) => (

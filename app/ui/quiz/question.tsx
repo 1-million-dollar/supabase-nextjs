@@ -1,6 +1,7 @@
 "use client";
 
-import Confetti from "./confetti";
+
+import Confetti from "react-confetti"
 import { type User } from '@supabase/supabase-js'
 
 import { UpdateScore } from "@/app/lib/data";
@@ -99,56 +100,6 @@ export default function Question({questions, user} : {questions: QuestionType[],
 
     return (
         <div className="flex flex-col p-5 bg-white text-black rounded-lg shadow-[0px_87px_78px_-39px_rgba(0,0,0,0.4)] w-full">
-            <style jsx global>{`
-  @keyframes fly-out {
-  0% {
-    transform: translate(0, 0) scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: translate(calc(100vw * var(--x)), calc(100vh * var(--y))) scale(0.5);
-    opacity: 0;
-  }
-}
-
-@keyframes move-out {
-  0% {
-    transform: translate(-50%, -50%) translate(0, 0);
-    opacity: 1;
-  }
-  100% {
-    transform: translate(-50%, -50%) translate(var(--x), var(--y));
-    opacity: 0;
-  }
-}
-  @keyframes instant-move {
-  0% {
-    transform: translate(-50%, -50%) translate(0, 0);
-  }
-  100% {
-    transform: translate(-50%, -50%) translate(var(--x), var(--y));
-  }
-}
-
-@keyframes random-move {
-  0% {
-    transform: translate(-50%, -50%) translate(0, 0);
-  }
-  100% {
-    transform: translate(-50%, -50%) translate(var(--x), var(--y));
-  }
-}
-
-@keyframes fade-out {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-`}</style>
-
             {!isQuizCompleted ? (
                 <>
                 <div className="p-1 mb-10">

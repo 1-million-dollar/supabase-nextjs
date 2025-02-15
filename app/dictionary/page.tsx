@@ -9,40 +9,40 @@ export const metadata: Metadata = {
 
 export default function Page() {
 
-    const addedWords = [   "texturizer",
-  "stage",
-  "speakee",
-  "axed",
-  "winding down",
-  "ossicone",
-  "blandify",
-  "flip-out",
-  "texturizing",
-  "cutting whip",
-  "hyung",
-  "pen",
-  "interrailing",
-  "speak-singing",
-  "archicortex",
-  "janded",]
+    const addedWords = [   "cutscene",
+  "learning",
+  "fashioning piece",
+  "flipperless",
+  "coreceptor",
+  "geotracking",
+  "abi",
+  "iechyd da",
+  "bronchiolitis obliterans",
+  "stage time",
+  "flip-up",
+  "argumentum ad populum",
+  "tadcu",
+  "cuttingness",
+  "Canis Major",
+  "banku",]
 
       
-    const updatedWords = [   "draughty",
-        "depress",
-        "cut-price",
-        "beeregar",
-        "barroom",
-        "chattery",
-        "tisane",
-        "crepe",
-        "corella",
-        "cut steel",
-        "apparel",
-        "arguer",
-        "textible",
-        "hurrick",
-        "textlet",
-        "lenvoy",]
+    const updatedWords = [   "cut steel",
+  "argument",
+  "beerage",
+  "flip side",
+  "licked",
+  "biceps",
+  "clogged",
+  "cut-price",
+  "collider",
+  "cheapish",
+  "wound",
+  "wealthy",
+  "downwind",
+  "cutpurse",
+  "cutover",
+  "braced",]
 
       
 
@@ -54,9 +54,9 @@ export default function Page() {
             <div className="flex flex-col justify-center mb-5 p-5 items-center text-center bg-gray-200 rounded-lg">
                 <p className="text-2xl mb-1"><b>Word of the day</b></p>
                 <div className="h-1 w-10 mb-3 bg-black"></div>
-                <p className="font-extrabold text-4xl mb-1">Christmas spirit</p>
+                <p className="font-extrabold text-4xl mb-1">rechauffe</p>
                 <p className="text-sm mb-3">verb</p>
-                <p className="text-md">A mood or attitude appropriate to the Christmas season, esp. one involving feelings of goodwill, benevolence, and a willingness to enjoy oneself.</p>
+                <p className="text-md">To warm again; to turn (leftovers) into a new dish. In later use also figurative: to rehash, rework.</p>
             </div>
             <div className="flex flex-col gap-10 md:gap-40 md:flex-row md:justify-center p-5 text-center bg-gray-200 rounded-lg">
                 <div className="flex flex-col justify-center items-center">

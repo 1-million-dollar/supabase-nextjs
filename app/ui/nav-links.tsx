@@ -3,7 +3,7 @@ import Link from "next/link";
 
 
 
-import { HomeIcon,GlobeAltIcon,BookmarkIcon,QuestionMarkCircleIcon,UserIcon } from "@heroicons/react/24/solid";
+import { HomeIcon,GlobeAltIcon,BookmarkIcon,AcademicCapIcon,UserIcon } from "@heroicons/react/24/solid";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
 
@@ -12,7 +12,7 @@ const links = [
     {name: 'Home', href: '/home', icon: HomeIcon },
     {name: 'DIctionary', href: '/dictionary', icon: GlobeAltIcon},
     {name: 'Words', href: '/words', icon: BookmarkIcon },
-    {name: 'Quiz', href: '/quiz', icon: QuestionMarkCircleIcon },
+    {name: 'Quiz', href: '/quiz', icon: AcademicCapIcon },
     {name: 'Account', href: `/account`, icon: UserIcon }    
 ]
 
@@ -36,7 +36,7 @@ export default function NavLinks() {
                     key={link.name}
                     href={link.href}
                     className={clsx(
-                        'flex rounded-lg items-center justify-center w-full border-green-400 border-2 bg-green-50 p-5 text-sm font-medium hover:bg-sky-100 hover:text-green-400 md:justify-start',
+                        'flex rounded-lg items-center justify-center w-full bg-green-50 p-4 text-sm font-medium hover:bg-sky-100 hover:text-green-400 md:justify-start',
                         {
                             'bg-sky-100 text-green-600': pathname === link.href,
                         },

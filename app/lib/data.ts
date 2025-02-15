@@ -1,4 +1,176 @@
 import { createClient } from '@/utils/supabase/client'
+import { vocabularyWords, advancedVocabularyWords, hardestVocabularyWords } from './values'
+
+interface InputItem {
+    question: string;
+    answer: string;
+    option_1: string;
+    option_2: string;
+    option_3: string;
+    option_4: string;
+  }
+  
+  interface OutputItem {
+    question: string;
+    options: string[];
+    correctAnswer: string;
+  }
+  
+  const convertToDesiredFormat = (input: InputItem[]): OutputItem[] => {
+    return input.map((item) => ({
+      question: item.question,
+      options: [item.option_1, item.option_2, item.option_3, item.option_4],
+      correctAnswer: item.answer,
+    }));
+  };
+  
+  
+
+
+async function addWordMeanings() {
+    const supabase = createClient()
+
+    for (let item in hardestVocabularyWords) {
+        const {data, error} = await supabase
+            .from("hard_words")
+            .insert({ word: hardestVocabularyWords[item].word, answer: hardestVocabularyWords[item].meaning })
+
+        if (data) {
+            console.log("data inserted successfully")
+        }
+        if (error) {
+            console.log(error)
+        }
+    }
+}
+//addWordMeanings()
+
+async function fetchWord(id: number) {
+    const supabase = createClient()
+    const {data, error} = await supabase
+        .from("hard_words")
+        .select('word')
+        .eq('id', id)
+
+        if(data) {
+            return data
+        }
+        if (error) {
+            console.log(error)
+        }
+}
+//for (let i=0; i<10; i++) {
+  //  fetchWord(Math.floor(Math.random()*142 +1))
+//}
+//const data = await fetchWord(Math.floor(Math.random()*294 +1))
+//if (data) {
+//    console.log(data[0].word)
+//}
+
+
+async function createOptions() {
+    const supabase = createClient()
+    let options = []
+
+    for (let j=1; j<87; j++) {
+        let l = 2
+        while (l > -1) {
+            const data = await fetchWord(Math.floor(Math.random()*73 +1))
+            if (data) {
+                options[l] = data[0].word
+                l = l - 1
+            }
+            else {
+                continue
+            }
+        }
+        
+        options[3] = hardestVocabularyWords[j-1].word
+
+        function shuffleArray<T>(array: T[]): T[]{
+            for (let i = array.length - 1; i > 0; i--) {
+              // Generate a random index from 0 to i
+              const j = Math.floor(Math.random() * (i + 1));
+              // Swap elements at indices i and j
+              [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+          }
+    
+        const s_array = shuffleArray(options)
+        console.log(s_array)
+
+        const {data, error} = await supabase
+          .from("hard_words")
+          .update({'option_1': s_array[0], 'option_2': s_array[1], 'option_3': s_array[2], 'option_4': s_array[3]})
+          .eq('id', j)
+
+        if (data) {
+            console.log("data inserted successfully")
+        }
+        if (error) {
+            console.log(error)
+        }
+
+    } 
+}
+
+//createOptions()
+
+// questions for vocab lessons
+
+export async function vocabQuestions(l: number) {
+    const supabase = createClient()
+    let table = "vocab_words"
+    let id = 0
+    const questions = []
+
+    for (let i: number = 0; i<5; i++) {
+        if (l >0 && l<251) {
+            id = Math.floor(Math.random()*147 +1)
+            table = "vocab_words"
+        }
+        else if (l > 250 && l < 401) {
+            id = Math.floor(Math.random()*73 +1)
+            table = "advanced_words"
+        }
+        else if (l > 400 && l<501) {
+            id = Math.floor(Math.random()*86 +1)
+            table = "hard_words"
+        }
+        const {data, error} = await supabase
+        .from(table)
+        .select('question, answer, option_1, option_2, option_3, option_4')
+        .eq('id', id)
+
+        if(data){
+        
+            const output: OutputItem[] = convertToDesiredFormat(data);
+
+            questions[i] = output[0]
+  
+        }
+        if (error) {
+            console.log(error)
+        }
+    }
+    return questions
+
+}
+
+export async function UpdateLevel(level : number, userID: string ) {
+    const supabase = await createClient() 
+
+    const { error } =  await supabase
+        .from('profiles')
+        .update({'level': ++level})
+        .eq('id', userID)
+
+    if (error) console.log(error)
+ }
+
+
+
 
 // searching detailed meaning from the free api
 export async function searchMeanings(word: string) {

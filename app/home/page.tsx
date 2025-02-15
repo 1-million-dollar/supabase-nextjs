@@ -10,6 +10,7 @@ import SearchRibbon from '../ui/searchribbon'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Metadata } from 'next'
+import { CpuChipIcon } from '@heroicons/react/16/solid'
 
 export const metadata: Metadata = {
   title: 'Home',
@@ -56,15 +57,20 @@ export default async function Page() {
               </div>
             </Link>
             
-            <Link href='/quiz/review'>
+            <Link href='/quiz'>
               <div className='font-extrabold text-center text-2xl p-10 bg-green-400 rounded-lg'>
-                Review<br /> Your Words
+                It's Quiz time
               </div>
             </Link>
           </div>
-          <div className='mb-24'>
-            <Leaderboard />
-          </div>
+
+          <div className="flex flex-col items-center justify-center mt-10 font-bold">
+                <Link href='https://chat.deepseek.com/' target="_blank">
+                    <CpuChipIcon height={100} />
+                </Link>
+                Ask AI
+            </div>
+          
           
         </div>
         <div className='p-1'>
@@ -97,8 +103,12 @@ export default async function Page() {
             <Image src='/dale_car.jpg' alt='the art of public speaking' width={250} height={250} className='rounded-md w-full h-full' />
           </div>
          </Link>
+         <div className='mb-24'>
+            <Leaderboard />
+          </div>
         </div>
           </Suspense>
+         
            
         </div>
     )

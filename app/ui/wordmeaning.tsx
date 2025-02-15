@@ -9,6 +9,9 @@ import { getQuestionId } from "../lib/data";
 import Meanings from "./meanings";
 import { createClient } from "@/utils/supabase/client";
 
+import { CpuChipIcon } from "@heroicons/react/24/solid";
+import Link from "next/link";
+
 type Definition = {
     definition: string;
     synonyms?: string;
@@ -108,6 +111,12 @@ export default async function WordMeaning({ word, user }: { word: string, user: 
                     ))}
                 </div>
             ))}
+            </div>
+            <div className="flex flex-col items-center justify-center mt-10 font-bold">
+                <Link href='https://chat.deepseek.com/' target="_blank">
+                    <CpuChipIcon height={100} />
+                </Link>
+                Ask AI
             </div>
         </div>
     )
