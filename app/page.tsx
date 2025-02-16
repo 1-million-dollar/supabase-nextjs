@@ -19,7 +19,7 @@ export default async function Home() {
 }
 
 
-export const products = [
+const products = [
   {
     title: "Home Page",
     link: "https://www.vocabtrivia.com/",
