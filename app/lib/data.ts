@@ -1,5 +1,4 @@
 import { createClient } from '@/utils/supabase/client'
-import { vocabularyWords, advancedVocabularyWords, hardestVocabularyWords } from './values'
 
 interface InputItem {
     question: string;
@@ -23,100 +22,6 @@ interface InputItem {
       correctAnswer: item.answer,
     }));
   };
-  
-  
-
-
-async function addWordMeanings() {
-    const supabase = createClient()
-
-    for (let item in hardestVocabularyWords) {
-        const {data, error} = await supabase
-            .from("hard_words")
-            .insert({ word: hardestVocabularyWords[item].word, answer: hardestVocabularyWords[item].meaning })
-
-        if (data) {
-            console.log("data inserted successfully")
-        }
-        if (error) {
-            console.log(error)
-        }
-    }
-}
-//addWordMeanings()
-
-async function fetchWord(id: number) {
-    const supabase = createClient()
-    const {data, error} = await supabase
-        .from("hard_words")
-        .select('word')
-        .eq('id', id)
-
-        if(data) {
-            return data
-        }
-        if (error) {
-            console.log(error)
-        }
-}
-//for (let i=0; i<10; i++) {
-  //  fetchWord(Math.floor(Math.random()*142 +1))
-//}
-//const data = await fetchWord(Math.floor(Math.random()*294 +1))
-//if (data) {
-//    console.log(data[0].word)
-//}
-
-
-async function createOptions() {
-    const supabase = createClient()
-    let options = []
-
-    for (let j=1; j<87; j++) {
-        let l = 2
-        while (l > -1) {
-            const data = await fetchWord(Math.floor(Math.random()*73 +1))
-            if (data) {
-                options[l] = data[0].word
-                l = l - 1
-            }
-            else {
-                continue
-            }
-        }
-        
-        options[3] = hardestVocabularyWords[j-1].word
-
-        function shuffleArray<T>(array: T[]): T[]{
-            for (let i = array.length - 1; i > 0; i--) {
-              // Generate a random index from 0 to i
-              const j = Math.floor(Math.random() * (i + 1));
-              // Swap elements at indices i and j
-              [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-          }
-    
-        const s_array = shuffleArray(options)
-        console.log(s_array)
-
-        const {data, error} = await supabase
-          .from("hard_words")
-          .update({'option_1': s_array[0], 'option_2': s_array[1], 'option_3': s_array[2], 'option_4': s_array[3]})
-          .eq('id', j)
-
-        if (data) {
-            console.log("data inserted successfully")
-        }
-        if (error) {
-            console.log(error)
-        }
-
-    } 
-}
-
-//createOptions()
-
 // questions for vocab lessons
 
 export async function vocabQuestions(l: number) {

@@ -1,4 +1,4 @@
-import Image from "next/image";
+
 import React from "react";
 import { Timeline } from "./timeline";
 
@@ -20,7 +20,7 @@ export function TimelineDemo() {
       content: (
         <div>
           <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
-            The best way to learn Vocab is to understand it's meaning and frame sentences out of it
+            The best way to learn Vocab is to understand it&apos;s meaning and frame sentences out of it
           </p>
           <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
             By writing down the words in a piece of paper and revising the from time to time will instill the words into your brain

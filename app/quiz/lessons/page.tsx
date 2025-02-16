@@ -16,6 +16,9 @@ export default async function Page() {
     if (data) {
         userLevel = data[0].level
     }
+    if (error) {
+        console.log(error)
+    }
     return (
         <CenteredScrollableDivs userLevel={userLevel} />
     )

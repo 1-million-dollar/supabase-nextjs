@@ -59,7 +59,7 @@ export default async function Page() {
             
             <Link href='/quiz'>
               <div className='font-extrabold text-center text-2xl p-10 bg-green-400 rounded-lg'>
-                It's Quiz time
+                It&apos;s Quiz time
               </div>
             </Link>
           </div>
