@@ -6,12 +6,10 @@ import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
 import LoadingScreen from '../ui/loadingscreen'
 import Leaderboard from '../ui/leaderboard'
-import SearchRibbon from '../ui/searchribbon'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Metadata } from 'next'
 import { FaBook, FaGamepad } from "react-icons/fa"; // Import icons
-import { motion } from "framer-motion"; // For animations
 
 
 export const metadata: Metadata = {

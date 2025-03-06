@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+
 import { FaHandshake } from "react-icons/fa";
 
 export default function Draw() {

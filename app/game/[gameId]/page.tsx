@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import Link from "next/link";
 import { useState } from "react";
-import { ref, set, onValue, update } from "firebase/database";
+import { ref, onValue, update } from "firebase/database";
 import { database } from "@/app/lib/firebase";
 
 import { useUser } from "@/app/context/UserContext";
@@ -80,9 +80,9 @@ export default function Page({ params }: { params: Promise<Params> }) {
     const formData = new FormData(e.currentTarget);
     const sentence = formData.get("sentence") as string;
 
-    let newWords = words.filter(w => w !== word);
+    const newWords = words.filter(w => w !== word);
 
-    let regex = new RegExp(`\\b${word}\\b`, "i");
+    const regex = new RegExp(`\\b${word}\\b`, "i");
     if (regex.test(sentence)) {
       // Update the game state in Firebase
     const updateGame = async (gameId: string) => {
@@ -226,7 +226,7 @@ try {
     };
 
     fetchProfile();
-  }, [userId]);
+  }, [userId, supabase]);
 
   // Listen for real-time updates
   useEffect(() => {

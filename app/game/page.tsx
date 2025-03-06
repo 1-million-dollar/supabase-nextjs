@@ -141,7 +141,7 @@ console.log("Selected words:", newArray);
     };
 
     fetchProfile();
-  }, [userId]);
+  }, [userId, supabase]);
 
   
 
