@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+
 import { FaTrophy } from "react-icons/fa";
 import ReactConfetti from "react-confetti";// Import using ES modules
 
