@@ -3,10 +3,11 @@ import { HeroParallax } from "./ui/aceternity/hero-parallax";
 import { TimelineDemo } from "./ui/aceternity/timelinedemo";
 import Footer from "./ui/footer";
 
-export default async function Home() {
+
+export default function Home() {
 
   
-
+  
   return (
     <div>
      

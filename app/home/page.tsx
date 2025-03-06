@@ -10,7 +10,9 @@ import SearchRibbon from '../ui/searchribbon'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Metadata } from 'next'
-import { CpuChipIcon } from '@heroicons/react/16/solid'
+import { FaBook, FaGamepad } from "react-icons/fa"; // Import icons
+import { motion } from "framer-motion"; // For animations
+
 
 export const metadata: Metadata = {
   title: 'Home',
@@ -46,31 +48,31 @@ export default async function Page() {
         <div className='flex md:flex-row flex-col mb-24 md:mb-0 p-2'>
           <Suspense fallback={<LoadingScreen />}>
           <div className='md:w-3/4'>
-          <SearchRibbon />
           <div className='flex justify-center p-5'>
             <SearchBox />
           </div>
-          <div className='flex flex-row items-center justify-center md:justify-evenly p-10'>
-            <Link href='/dictionary'>
-              <div className='font-extrabold text-3xl p-10 bg-green-400 rounded-lg hidden md:block'>
-                Dictionary
+          <div className="flex flex-col md:flex-row items-center justify-center md:justify-evenly p-4 h-min bg-gray-100">
+            {/* Do Lessons Button */}
+            <Link href="/quiz">
+              <div className="flex flex-col items-center justify-center p-4 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg shadow-lg cursor-pointer m-2 w-48 h-24">
+                <FaBook className="text-white text-3xl mb-2" /> {/* Icon */}
+                <span className="font-extrabold text-center text-lg text-white">
+                  Do Lessons
+                </span>
               </div>
             </Link>
-            
-            <Link href='/quiz'>
-              <div className='font-extrabold text-center text-2xl p-10 bg-green-400 rounded-lg'>
-                It&apos;s Quiz time
+
+            {/* Play Game Button */}
+            <Link href="/game">
+              <div className="flex flex-col items-center justify-center p-4 bg-gradient-to-r from-green-500 to-green-600 rounded-lg shadow-lg cursor-pointer m-2 w-48 h-24">
+                <FaGamepad className="text-white text-3xl mb-2" /> {/* Icon */}
+                <span className="font-extrabold text-center text-lg text-white">
+                  Play Game
+                </span>
               </div>
             </Link>
           </div>
-
-          <div className="flex flex-col items-center justify-center mt-10 font-bold">
-                <Link href='https://chat.deepseek.com/' target="_blank">
-                    <CpuChipIcon height={100} />
-                </Link>
-                Ask AI
-            </div>
-          
+         
           
         </div>
         <div className='p-1'>
@@ -81,6 +83,11 @@ export default async function Page() {
          <Link href='https://www.thehindu.com/' target="_blank">
           <div className='p-10 border-2 border-black rounded-lg mb-5'>
             <Image src='https://www.thehindu.com/theme/images/th-online/thehindu-logo.svg' alt='the hindu' width={250} height={250} />
+          </div>
+         </Link>
+         <Link href='https://indianexpress.com/' target="_blank">
+          <div className='p-10 border-2 border-black rounded-lg mb-5'>
+            <Image src='https://indianexpress.com/wp-content/themes/indianexpress/images/indian-express-logo-n.svg' alt='the indian express' width={250} height={250} />
           </div>
          </Link>
          <Link href='https://aeon.co/' target="_blank">
@@ -103,13 +110,12 @@ export default async function Page() {
             <Image src='/dale_car.jpg' alt='the art of public speaking' width={250} height={250} className='rounded-md w-full h-full' />
           </div>
          </Link>
-         <div className='mb-24'>
+        </div>
+          </Suspense>
+          <div className='mb-24'>
             <Leaderboard />
           </div>
         </div>
-          </Suspense>
-         
-           
-        </div>
+        
     )
 }

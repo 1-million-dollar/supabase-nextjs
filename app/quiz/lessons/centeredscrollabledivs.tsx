@@ -44,7 +44,7 @@ export default function CenteredScrollableDivs({userLevel} : {userLevel: number}
             mx-auto my-2
           `}
         >
-          {((index + 1) < userLevel ? <CheckBadgeIcon height={35}/> : ((index + 1) === userLevel ? <Link href={`/quiz/lessons/${userLevel}`} className='p-5' ><p className='font-bold text-lg'>{index + 1}</p></Link> : <LockClosedIcon height={35} />))}
+          {((index + 1) < userLevel ? <CheckBadgeIcon height={35}/> : ((index + 1) === userLevel ? <Link href={`/quiz/lessons/${userLevel}`} className='p-20' ><p className='font-bold text-lg'>{index + 1}</p></Link> : <LockClosedIcon height={35} />))}
         </div>
       ))}
     </div>

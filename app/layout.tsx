@@ -2,6 +2,8 @@
 
 import '@/app/ui/global.css';
 
+import { UserProvider } from './context/UserContext';
+
 import { Metadata } from 'next';
 
 import SideNav from './ui/sidenav';
@@ -39,7 +41,7 @@ export default function RootLayout({
           </div>
 
           <div className="flex-grow md:overflow-y-auto">
-            {children}
+            <UserProvider>{children}</UserProvider>
             <Analytics />
           </div>
 

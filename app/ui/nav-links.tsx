@@ -10,7 +10,7 @@ import { usePathname } from "next/navigation";
 
 const links = [
     {name: 'Home', href: '/home', icon: HomeIcon },
-    {name: 'DIctionary', href: '/dictionary', icon: GlobeAltIcon},
+    {name: 'SayIt', href: '/game', icon: GlobeAltIcon},
     {name: 'Words', href: '/words', icon: BookmarkIcon },
     {name: 'Quiz', href: '/quiz', icon: AcademicCapIcon },
     {name: 'Account', href: `/account`, icon: UserIcon }    

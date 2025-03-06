@@ -15,7 +15,7 @@ export default function SideNav() {
 
     const hideNav = ['/', '/login', '/error','/signup','/signup/authError', '/login/authError'];
 
-    if (hideNav.includes(pathname)) {
+    if (hideNav.includes(pathname) || pathname.startsWith('/game/')) {
         return null; // Hide navigation on specific pages
     }
     
