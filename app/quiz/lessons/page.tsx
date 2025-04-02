@@ -82,7 +82,7 @@ export default function Page() {
           <p className="text-amber-200 max-w-md mx-auto">
             {userLevel > 1 ? (
               <>
-                You've mastered <span className="font-bold text-yellow-300">{userLevel - 1}</span> levels! Keep going!
+                You&apos;ve mastered <span className="font-bold text-yellow-300">{userLevel - 1}</span> levels! Keep going!
               </>
             ) : (
               "Start your learning adventure!"

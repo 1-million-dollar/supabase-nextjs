@@ -13,7 +13,7 @@ import { gameWords } from "../lib/values"
 
 import { createClient } from "@/utils/supabase/client";
 
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 
 export default function Page() {

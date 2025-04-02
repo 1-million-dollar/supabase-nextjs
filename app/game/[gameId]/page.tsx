@@ -9,7 +9,7 @@ import { database } from "@/app/lib/firebase";
 
 import { createClient } from "@/utils/supabase/client";
 
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 import YouWon from "@/app/ui/gameUI/youwon";
 import YouLose from "@/app/ui/gameUI/youlose";

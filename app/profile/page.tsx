@@ -3,8 +3,8 @@
 
 import { useSession, signOut } from "next-auth/react";
 import { motion } from "framer-motion"; // For animations
-import Link from "next/link"; // For navigation
-import { FaUser, FaTrophy, FaInfoCircle } from "react-icons/fa"; // Icons
+
+import { FaUser, FaTrophy } from "react-icons/fa"; // Icons
 import { redirect } from "next/navigation";
 
 

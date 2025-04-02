@@ -1,7 +1,7 @@
 'use client'
 
 // pages/dictionary.tsx
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -10,7 +10,7 @@ import { addSearchedWord, getQuestionId } from '../lib/data';
 
 import { createClient } from '@/utils/supabase/client';
 
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 // Types (same as before)
 interface Definition {
@@ -308,7 +308,7 @@ export default function Page() {
                                 <p className="text-gray-700">{def.definition}</p>
                                 {def.example && (
                                   <p className="text-gray-500 italic mt-2 pl-2 border-l-2 border-purple-200">
-                                    "{def.example}"
+                                    &quot;{def.example}&quot;
                                   </p>
                                 )}
                               </motion.li>

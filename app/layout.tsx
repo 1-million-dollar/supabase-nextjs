@@ -5,7 +5,7 @@ import '@/app/ui/global.css';
 import { UserProvider } from './context/UserContext';
 import { SessionProvider } from "next-auth/react";
 
-import { Metadata } from 'next';
+
 
 import SideNav from './ui/sidenav';
 import { Analytics } from "@vercel/analytics/react"
