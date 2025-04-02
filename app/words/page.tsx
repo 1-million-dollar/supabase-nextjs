@@ -1,7 +1,7 @@
 'use client'
 
 import Link from "next/link";
-import { createClient } from "@/utils/supabase/client";
+
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { fetchUserWords } from "../lib/data";
@@ -21,7 +21,7 @@ interface DictionaryEntry {
 }
 
 export default function Page() {
-    const supabase = createClient();
+    
     const { data: session } = useSession();
     const email = session?.user?.email;
     const [words, setWords] = useState<string[]>([]);
@@ -115,7 +115,7 @@ export default function Page() {
                                                                 <li key={defIndex} className="text-gray-700">
                                                                     {def.definition}
                                                                     {def.example && (
-                                                                        <p className="text-gray-500 italic mt-1">Example: "{def.example}"</p>
+                                                                        <p className="text-gray-500 italic mt-1">Example: &quot;{def.example}&quot;</p>
                                                                     )}
                                                                 </li>
                                                             ))}
