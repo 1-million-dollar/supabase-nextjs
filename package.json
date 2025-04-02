@@ -20,6 +20,7 @@
     "firebase": "^11.4.0",
     "framer-motion": "^11.13.1",
     "next": "15.0.3",
+    "next-auth": "^4.24.11",
     "react": "19.0.0-rc-69d4b800-20241021",
     "react-confetti": "^6.2.2",
     "react-dom": "19.0.0-rc-69d4b800-20241021",
