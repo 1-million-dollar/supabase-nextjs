@@ -63,13 +63,13 @@ export async function vocabQuestions(l: number) {
 
 }
 
-export async function UpdateLevel(level : number, userID: string ) {
+export async function UpdateLevel(level : number, email: string ) {
     const supabase = await createClient() 
 
     const { error } =  await supabase
-        .from('profiles')
+        .from('users')
         .update({'level': ++level})
-        .eq('id', userID)
+        .eq('email', email)
 
     if (error) console.log(error)
  }
@@ -109,7 +109,7 @@ export async function addSearchedWord(word: string) {
             const data = await fetchMeanings(Math.floor(Math.random()*totalQuestions + 1))
             if (data) {
                 if (data[0] !== undefined) {
-                    options[i] = data[0].answer
+                    options[i] = data[0].word
                     i = i - 1
                 }
                 else {
@@ -117,7 +117,7 @@ export async function addSearchedWord(word: string) {
                 }
             }
         } 
-        options[3] = meaning
+        options[3] = word
 
         function shuffleArray<T>(array: T[]): T[]{
             for (let i = array.length - 1; i > 0; i--) {
@@ -145,6 +145,8 @@ export async function addSearchedWord(word: string) {
     }
 }
 
+
+
 // function to get the total number of questions in question table
 async function totalNoofQuestions() {
     const supabase = createClient()
@@ -164,7 +166,7 @@ async function fetchMeanings(id: number) {
     const supabase = createClient()
     const {data,error} = await supabase
         .from('question')
-        .select(`answer`)
+        .select(`word`)
         .eq('id', id)
         
     if (error) {
@@ -227,14 +229,14 @@ export async function fetchRapidQuestions() {
 }
 
 // this function returns the array of words that the users have searched during the past
-export async function fetchUserWords(userID: string) {
+export async function fetchUserWords(email: string) {
     let words: string[] = []
 
     const supabase = createClient()
     const {data, error} = await supabase
-        .from("words")
+        .from("new_words")
         .select(`word`)
-        .eq('userID', userID)
+        .eq('email', email)
         .order('frequency', { ascending: true})
 
     if (error) {
@@ -277,11 +279,11 @@ export async function fetchReviewQuestions(words: string[]) {
     return questions
 }
 // this function updates the score of the user
-export async function UpdateScore(userID: string, score: number,correct: number, wrong: number) {
+export async function UpdateScore(email: string, score: number,correct: number, wrong: number) {
     const supabase = createClient()
 
     let newPoints, newCorrect, newWrong
-    const {data, error} = await supabase.from('profiles').select('points, correct, wrong').eq('id', userID)
+    const {data, error} = await supabase.from('users').select('points, correct, wrong').eq('email', email)
     
     if (data) {
          newPoints = data[0].points + score
@@ -291,20 +293,20 @@ export async function UpdateScore(userID: string, score: number,correct: number,
         console.log(error)
     }
     await supabase
-            .from('profiles')
+            .from('users')
             .update({'points': newPoints, 'correct': newCorrect, 'wrong': newWrong})
-            .eq('id', userID)
+            .eq('email', email)
     
 }
 
 // this function updates the frequency of the words correct by the user
-export async function UpdateFrequency(userID: string, word: string) {
+export async function UpdateFrequency(email: string, word: string) {
     const supabase = createClient()
 
     const {data} = await supabase
-        .from('words')
+        .from('new_words')
         .select('frequency')
-        .eq('userID', userID)
+        .eq('email', email)
         .eq('word', word)
 
     
@@ -314,7 +316,7 @@ export async function UpdateFrequency(userID: string, word: string) {
         const {error} = await supabase
             .from('words')
             .update({'frequency': new_freq})
-            .eq('userID', userID)
+            .eq('email', email)
             .eq('word', word)
         console.log(error)
     }
@@ -349,19 +351,19 @@ export async function getQuestionId(word: string) {
         console.log(error)
     }
     if (data) {
-        return data
+        return data?.[0]?.id ? Number(data[0].id) : 0;
     }
 
     return 0
 }
 
-export async function getWordTime(word : string, id: string) {
+export async function getWordTime(word : string, email: string) {
     const supabase = createClient()
     const { data , error } = await( await supabase)
-        .from('words')
+        .from('new_words')
         .select('created_at')
         .eq('word', word)
-        .eq('userID', id)
+        .eq('email', email)
 
     if (data) {
         return (data)

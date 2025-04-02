@@ -7,6 +7,8 @@ import { redirect } from "next/navigation";
 
 import { UpdateLevel } from "@/app/lib/data";
 
+import { useSession } from "next-auth/react"
+
 
 type QuestionType = {
     question: string;
@@ -14,13 +16,17 @@ type QuestionType = {
     correctAnswer: string;
   }
 
-export default function QuestionPage({questions, level, userId} : {questions: QuestionType[], level: number, userId: string}) {
+export default function QuestionPage({questions, level} : {questions: QuestionType[], level: number}) {
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [score, setScore] = useState(0);
     const [showScore, setShowScore] = useState(false);
     const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
     const [userAnswers, setUserAnswers] = useState<{ question: string; userAnswer: string; correctAnswer: string }[]>([]);
     const [showConfetti, setShowConfetti] = useState(false);
+
+    const { data:session } = useSession()
+
+    const email = session?.user?.email
   
     // Audio refs
     const questionAudioRef = useRef<HTMLAudioElement>(null);
@@ -81,8 +87,8 @@ export default function QuestionPage({questions, level, userId} : {questions: Qu
   
     const restartQuiz = () => {
 
-        if (score === questions.length) {
-            UpdateLevel(level, userId)
+        if (score === questions.length && email) {
+            UpdateLevel(level, email)
             redirect(`/quiz/lessons/`)
           }
        

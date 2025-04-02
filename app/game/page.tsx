@@ -4,41 +4,51 @@ import { useState, useEffect } from "react";
 import { ref, set, update } from "firebase/database";
 import { database } from "../lib/firebase";
 import { redirect } from "next/navigation";
-import { wordsArray } from "../lib/values";
 
-import { useUser } from "../context/UserContext";
+import { gameWords } from "../lib/values"
+
+
+
+
 
 import { createClient } from "@/utils/supabase/client";
 
+import { useSession, signOut } from "next-auth/react";
+
 
 export default function Page() {
- 
 
+  const { data: session } = useSession()
  
-  
   const [username, setUserName] = useState<string | null>(null);
-  
-  const { userId } = useUser();
 
   const supabase = createClient()
 
-  // Function to shuffle an array (Fisher-Yates algorithm)
-function shuffleArray(array: string[]): string[] {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1)); // Random index
-    [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+  function shuffleArray(array: { word: string; meaning: string; }[]) {
+    // Create a copy of the original array to avoid mutating it directly
+    const shuffled = [...array];
+    
+    // Fisher-Yates shuffle algorithm
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1)); // Random index from 0 to i
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; // Swap elements
+    }
+    
+    return shuffled;
   }
-  return array;
-}
+  
+  // Usage example:
+  const shuffledWords = shuffleArray(gameWords);
+  console.log(shuffledWords); // Randomly shuffled array
 
 // Select 6 random words
-const shuffledWords = shuffleArray([...wordsArray]); // Shuffle a copy of the array
-const selectedWords: string[] = shuffledWords.slice(0, 6); // Get the first 6 words
+
+const selectedWords: { word: string; meaning: string }[] = shuffledWords.slice(0, 6);
+// Result: Array of 6 objects like { word: "...", meaning: "..." }
 
 // Add the selected words to another array
-const newArray: string[] = [];
-newArray.push(...selectedWords);
-
+const newArray: { word: string; meaning: string }[] = [];
+newArray.push(...selectedWords); // Works! (same type)
 console.log("Selected words:", newArray);
 
  
@@ -66,9 +76,9 @@ console.log("Selected words:", newArray);
       player2_score: 0,
       player1_username: username,
       player2_username: "",
-      player1_time: 0,
-      player2_time: 0,
+      time_left: 30,
       word: "",
+      meaning: "",
       is_word: false,
       sentence: "",
       is_sentence: false,
@@ -126,55 +136,89 @@ console.log("Selected words:", newArray);
   
   // get user name
   useEffect(() => {
-    const fetchProfile = async () => {
+    const fetchUser = async () => {
       const { data, error } = await supabase
-        .from('profiles')
+        .from('users')
         .select('username')
-        .eq('id', userId)
+        .eq('email', session?.user?.email)
         .single(); // Use .single() if you expect only one row
 
       if (error) {
         console.log(error)
       } else {
        setUserName(data.username)
+       console.log(username)
       }
     };
 
-    fetchProfile();
-  }, [userId, supabase]);
+    fetchUser();
+  }, [supabase]);
 
   
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
-      <h1 className="text-3xl font-bold mb-6 text-blue-600">SayIt</h1>
-      
-        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-          <button
-            onClick={createGame}
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors mb-4"
-          >
-            Create New Game
-          </button>
-          <div>
-            <form onSubmit={joinGame} className="flex flex-col space-y-4">
-              <input
-                type="text"
-                name="game"
-                placeholder="Enter Game ID"
-                
-                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <button
-                type="submit"
-                className="w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition-colors"
-              >
-                Join Game
-              </button>
-            </form>
-          </div>
-        </div>
-      
+    <div className="h-full bg-gradient-to-br from-blue-50 to-indigo-50 flex flex-col items-center justify-center p-6">
+  {/* Search Box at the Top (visual only) */}
+  <div className="w-full max-w-md mb-6">
+    <div className="relative">
+      <input
+        type="text"
+        placeholder="Search for users..."
+        className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm"
+        disabled
+      />
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 absolute left-3 top-3.5" viewBox="0 0 20 20" fill="currentColor">
+        <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+      </svg>
     </div>
+  </div>
+
+  {/* Header */}
+  <div className="text-center mb-8">
+    <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 mb-2">
+      SayIt
+    </h1>
+    
+  </div>
+
+  {/* Main card */}
+  <div className="bg-white/90 backdrop-blur-sm p-8 rounded-xl shadow-lg w-full max-w-md border border-white/20">
+    {/* Create Game Button */}
+    <button
+      onClick={createGame}
+      className="w-full bg-gradient-to-r from-blue-500 to-indigo-500 text-white py-3 px-6 rounded-lg hover:from-blue-600 hover:to-indigo-600 transition-all shadow-md hover:shadow-lg mb-6"
+    >
+      Create New Game
+    </button>
+
+    {/* Divider */}
+    <div className="relative mb-6">
+      <div className="absolute inset-0 flex items-center">
+        <div className="w-full border-t border-gray-200"></div>
+      </div>
+      <div className="relative flex justify-center">
+        <span className="px-3 bg-white text-gray-500 text-sm">OR</span>
+      </div>
+    </div>
+
+    {/* Join Game Form */}
+    <form onSubmit={joinGame} className="space-y-4">
+      <div>
+        <input
+          type="text"
+          name="game"
+          placeholder="Enter Game ID"
+          className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+        />
+      </div>
+      <button
+        type="submit"
+        className="w-full bg-gradient-to-r from-green-500 to-teal-500 text-white py-3 px-6 rounded-lg hover:from-green-600 hover:to-teal-600 transition-all shadow-md hover:shadow-lg"
+      >
+        Join Game
+      </button>
+    </form>
+  </div>
+</div>
   );
 }

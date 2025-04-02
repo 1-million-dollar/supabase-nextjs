@@ -6,9 +6,10 @@ import { useState } from "react";
 import { ref, onValue, update } from "firebase/database";
 import { database } from "@/app/lib/firebase";
 
-import { useUser } from "@/app/context/UserContext";
 
 import { createClient } from "@/utils/supabase/client";
+
+import { useSession, signOut } from "next-auth/react";
 
 import YouWon from "@/app/ui/gameUI/youwon";
 import YouLose from "@/app/ui/gameUI/youlose";
@@ -19,10 +20,23 @@ type Params = {
   gameId: string;
 };
 
+type WordItem = {
+  word: string;
+  meaning: string;
+};
+
+interface Error {
+  message: string;
+  context: { text: string };
+  suggestions: string[];
+}
+
 
 export default function Page({ params }: { params: Promise<Params> }) {
 
   const { gameId } = React.use(params);
+
+  const { data: session } = useSession()
 
   const [P1user, setP1User] = useState<string | null>(null);
   const [P2user, setP2User] = useState<string | null>(null);
@@ -33,16 +47,19 @@ export default function Page({ params }: { params: Promise<Params> }) {
   const [sentence, setSentence] = useState<string>("");
   const [isWord, setIsword] = useState(false)
   const [isSentence, setIsSentence] = useState(false)
-  const [result, setResult] = useState<boolean | null>(null);
+  const [result, setResult] = useState<{
+      isCorrect: boolean;
+      errors?: Error[];
+    } | null>(null);
   const [isResult, setIsresult] = useState<boolean | null>(null);
   const [P1score, setP1score] = useState(0)
   const [P2score, setP2score] = useState(0)
-  const [words, setWords] = useState([])
+  const [words, setWords] = useState<WordItem[]>([]);
   const [status, setStatus] = useState("")
+  const [meaning, setMeaning] = useState<string | null>(null)
+  const [timeLeft, setTimeLeft] = useState(30)
+  
 
-
-
-  const { userId } = useUser();
 
   const supabase = createClient()
 
@@ -52,11 +69,17 @@ export default function Page({ params }: { params: Promise<Params> }) {
     const formData = new FormData(e.currentTarget);
     const word = formData.get("word") as string;
 
+    function getMeaning(targetWord : string) {
+      const foundWord = words.find(item => item.word === targetWord);
+      return foundWord ? foundWord.meaning : 'Word not found';
+    }
+
     
 
     const updateGame = async (gameId: string) => {
           const updates = {
             "word": word, // Update player1_turn
+            "meaning": getMeaning(word), //update the meaning of the word
             "is_word": true, // There is a word
             "sentence": "", // new sentence to be entered
             "result": null, // new result to be displayed
@@ -79,8 +102,13 @@ export default function Page({ params }: { params: Promise<Params> }) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const sentence = formData.get("sentence") as string;
-
-    const newWords = words.filter(w => w !== word);
+    const removeWord = (wordList: WordItem[], targetWord: string): WordItem[] => {
+      return wordList.filter(item => item.word !== targetWord);
+    };
+    
+    // Usage:
+    const newWords = removeWord(words, word);
+    
 
     const regex = new RegExp(`\\b${word}\\b`, "i");
     if (regex.test(sentence)) {
@@ -89,6 +117,7 @@ export default function Page({ params }: { params: Promise<Params> }) {
       const updates = {
         "sentence": sentence, // Update sentence
         "is_sentence": true, // There is a sentence
+        "time_left": 30, //reset time
         "status": "playing", // Update status
       };
     
@@ -119,6 +148,7 @@ try {
     });
 
     const data = await response.json();
+    
     console.log(data?.isCorrect)
 
     if(data?.isCorrect) {
@@ -126,12 +156,13 @@ try {
     const updateGame = async (gameId: string) => {
       const updates = {
         "is_result": true, // There is a result
-        "result": true, // Update result
+        "result": data, // Update result
         "is_word": false, //user can enter next word
         "words": newWords, // update new words in database
         "player1_score": !isP1turn ? P1score + 1 : P1score, // Update player1 score
         "player2_score": !isP1turn ? P2score : P2score + 1, // Update player2 score
         "player1_turn": !isP1turn, // Change P1 turn
+        "time_left": 30,
         "status": "playing", // Update status
       };
     
@@ -150,10 +181,11 @@ try {
     const updateGame = async (gameId: string) => {
       const updates = {
         "is_result": true, // There is a result
-        "result": false, // Update result
+        "result": data, // Update result
         "is_word": false, // user can enter next word
         "words": newWords, // update new words in database
         "player1_turn": !isP1turn, // Change P1 turn
+        "time_left": 30,
         "status": "playing", // Update status
       };
     
@@ -181,6 +213,7 @@ try {
     checkSentence();
 
     } else {
+      alert("The word is not in the sentence.")
       console.log("The word is not in the sentence.");
       
     }
@@ -203,19 +236,74 @@ try {
       }
     };
     updateGame(gameId)
+  }
+
+
+
+  // the timer
+  useEffect(() => {
+    if (timeLeft > 0 && !isSentence && isWord) {
+      const timer = setTimeout(() => setTimeLeft(timeLeft -1), 1000)
+
+      // update data in firebase
+    const updateGame = async (gameId: string) => {
+      const updates = {
+        "time_left": timeLeft,
+        "status": "playing", // Update status
+      };
+    
+      try {
+        await update(ref(database, `games/${gameId}`), updates);
+        console.log("Game updated successfully.");
+      } catch (error) {
+        console.error("Error updating game:", error);
+      }
+    };
+
+    updateGame(gameId)
+      console.log(timeLeft)
+      return () => clearTimeout(timer)
+    } else if (timeLeft === 0 && !isSentence && isWord) {
+      setTimeLeft(30)
+      const removeWord = (wordList: WordItem[], targetWord: string): WordItem[] => {
+        return wordList.filter(item => item.word !== targetWord);
+      };
+      
+      // Usage:
+      const newWords = removeWord(words, word);
+
+      // update data in firebase
+    const updateGame = async (gameId: string) => {
+      const updates = {
+        "is_word": false, // user can enter next word
+        "words": newWords, // update new words in database
+        "time_left": 30,
+        "player1_turn": !isP1turn, // Change P1 turn
+        "status": "playing", // Update status
+      };
+    
+      try {
+        await update(ref(database, `games/${gameId}`), updates);
+        console.log("Game updated successfully.");
+      } catch (error) {
+        console.error("Error updating game:", error);
+      }
+    };
+
+    updateGame(gameId)
+    
     }
-
-
+  }, [timeLeft, isSentence, isWord])
 
 
 
   // get user name
   useEffect(() => {
-    const fetchProfile = async () => {
+    const fetchUser = async () => {
       const { data, error } = await supabase
-        .from('profiles')
+        .from('users')
         .select('username')
-        .eq('id', userId)
+        .eq('email', session?.user?.email)
         .single(); // Use .single() if you expect only one row
 
       if (error) {
@@ -225,8 +313,8 @@ try {
       }
     };
 
-    fetchProfile();
-  }, [userId, supabase]);
+    fetchUser();
+  }, [supabase]);
 
   // Listen for real-time updates
   useEffect(() => {
@@ -249,6 +337,11 @@ try {
           setIsresult(data.is_result)
           setWords(data.words)
           setStatus(data.status)
+          setMeaning(data.meaning)
+          setResult(data.result)
+          setTimeLeft(data.time_left)
+
+          
           
         }
       });
@@ -286,7 +379,7 @@ try {
               </div>
             </div>
             <div className="text-base sm:text-lg font-bold text-purple-800">
-              0:00
+              0:{username !== P1user ? isP1turn ? timeLeft : "00" : isP1turn ? "00" : timeLeft}
             </div>
           </div>
         </div>
@@ -324,9 +417,9 @@ try {
               <form onSubmit={handleSetWord} className="flex flex-col items-center space-y-4">
               <select name="word" className="w-full p-2 sm:p-3 rounded-md border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base">
               {words ? (
-                words.map((word, index) => (
-                  <option key={index} value={word}>
-                    {word}
+                words.map((item, index) => (
+                  <option key={index} value={item.word}>
+                    {item.word}
                   </option>
                 ))
               ) : <option>no option</option>
@@ -343,15 +436,32 @@ try {
 
           {/* Player 2 Section */}
           <div className="bg-green-100 p-4 sm:p-6 rounded-lg mb-4 sm:mb-6 space-y-4">
-            <div>{isWord ? <b>{word}</b> : "Waiting..."} </div>
+            <div>{isWord ? <p><b>{word} </b>: {meaning}</p> : "Waiting..."} </div>
             <div>{isSentence ? <b>{sentence}</b> : ""}</div>
             <div>
               {isResult ? (
-                result ? (
-                  <p className="text-green-600 font-semibold">✅ The sentence is correct!</p>
+                result && (
+                  <div className="mt-6 w-full max-w-md">
+                    {result.isCorrect ? (
+                      <p className="text-green-600 font-semibold">✅ The sentence is correct!</p>
                     ) : (
-                  <p className="text-red-600 font-semibold">❌ The sentence has errors:</p>
-                  )
+                      <div>
+                        <p className="text-red-600 font-semibold">❌ The sentence has errors:</p>
+                        <ul className="mt-2">
+                          {result.errors?.map((error, index) => (
+                            <li key={index} className="mb-2">
+                              <p className="text-gray-700">{error.message}</p>
+                              <p className="text-gray-500">Context: {error.context.text}</p>
+                              <p className="text-gray-500">
+                                Suggestions: {error.suggestions.join(', ')}
+                              </p>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )
               ) : ""}
               
             </div>
@@ -361,16 +471,33 @@ try {
           <div>
            {/* Player 1 Section */}
            <div className="bg-green-100 p-4 sm:p-6 rounded-lg mb-4 sm:mb-6 space-y-4">
-          <div>{isWord ? <b>{word}</b> : "Waiting..."} </div>
+          <div>{isWord ? <p><b>{word} </b>: {meaning}</p> : "Waiting..."} </div>
           <div>{isSentence ? <b>{sentence}</b> : ""}</div>
           <div>
-            {isResult ? (
-              result ? (
-                <p className="text-green-600 font-semibold">✅ The sentence is correct!</p>
-                  ) : (
-                <p className="text-red-600 font-semibold">❌ The sentence has errors:</p>
+          {isResult ? (
+                result && (
+                  <div className="mt-6 w-full max-w-md">
+                    {result.isCorrect ? (
+                      <p className="text-green-600 font-semibold">✅ The sentence is correct!</p>
+                    ) : (
+                      <div>
+                        <p className="text-red-600 font-semibold">❌ The sentence has errors:</p>
+                        <ul className="mt-2">
+                          {result.errors?.map((error, index) => (
+                            <li key={index} className="mb-2">
+                              <p className="text-gray-700">{error.message}</p>
+                              <p className="text-gray-500">Context: {error.context.text}</p>
+                              <p className="text-gray-500">
+                                Suggestions: {error.suggestions.join(', ')}
+                              </p>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
                 )
-            ) : ""}
+              ) : ""}
             
           </div>
         </div>
@@ -409,7 +536,7 @@ try {
               </div>
             </div>
             <div className="text-base sm:text-lg font-bold text-orange-800">
-              0:00
+              0:{username === P1user ? isP1turn ? timeLeft : "00" : isP1turn ? "00" : timeLeft}
             </div>
           </div>
         </div>

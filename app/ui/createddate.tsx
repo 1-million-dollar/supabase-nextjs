@@ -2,17 +2,24 @@
 
 import { useEffect, useState } from "react";
 import { getWordTime } from "../lib/data";
+import { useSession } from "next-auth/react";
 
-export default function CreatedDate({ word, id }: { word: string, id: string }) {
+export default function CreatedDate({ word }: { word: string }) {
   const [time, setTime] = useState<string | null>(null);
   const [timeDifference, setTimeDifference] = useState("");
+
+  const { data: session } = useSession()
 
   useEffect(() => {
     let isMounted = true;
 
     const fetchTime = async () => {
+      let fetchedTime
       try {
-        const fetchedTime = await getWordTime(word, id);
+        if (session?.user?.email) {
+          fetchedTime = await getWordTime(word, session?.user?.email);
+        }
+       
 
         // Safely handle the response and extract the `created_at` timestamp
         if (fetchedTime && Array.isArray(fetchedTime) && fetchedTime.length > 0) {

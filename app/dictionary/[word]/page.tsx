@@ -16,17 +16,11 @@ export default async function Page(props: { params: Params }) {
 
   const supabase = await createClient()
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (user)
-
+  
   return(
     <div>
       <Suspense fallback={<div><LoadingScreen /></div>}>
-        <WordMeaning word={word}
-            user={user} />
+        <WordMeaning />
       </Suspense>
     </div>
   )

@@ -2,9 +2,10 @@
 
 import { fetchUserWords, UpdateFrequency } from '@/app/lib/data'
 import { fetchReviewQuestions } from '@/app/lib/data'
-import { type User } from '@supabase/supabase-js'
 
 import { useState, useEffect } from 'react'
+
+import { useSession } from "next-auth/react"
 
 import LoadingScreen from './loadingscreen'
 
@@ -18,7 +19,7 @@ type QuestionType = {
   };
 
 
-export default function ReviewQuestions({user} : {user: User | null}) {
+export default function ReviewQuestions() {
 
     const [questions, setQuestions] = useState<QuestionType[]>([]);
     const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -28,13 +29,20 @@ export default function ReviewQuestions({user} : {user: User | null}) {
     const [correctOption, setCorrectOption] = useState<string | null>("");
     const [loading, setLoading] = useState(true)
 
+    const { data: session} = useSession()
+
+    const email = session?.user?.email
+
     useEffect(() => {
         const fetchData = async () => {
             try {
-                if(user?.id) {
+                if(email) {
                     console.log('Fetching data...');
-                    const words = await fetchUserWords(user?.id)
-                    setQuestions(await fetchReviewQuestions(words))
+                    if (email) {
+                        const words = await fetchUserWords(email)
+                        setQuestions(await fetchReviewQuestions(words))
+                    }
+                    
                     
                 }
             } catch (error) {
@@ -52,8 +60,8 @@ export default function ReviewQuestions({user} : {user: User | null}) {
     const data = questions[currentQuestion]
 
   
-    const word = data?.word
-    const correctAnswer = data?.answer
+    const word = data?.answer
+    const correctAnswer = data?.word
 
 
     const options = [data?.option_1, data?.option_2, data?.option_3, data?.option_4]
@@ -66,8 +74,8 @@ export default function ReviewQuestions({user} : {user: User | null}) {
 
       const handleNextQuestion = () => {
         if (selectedOption === questions[currentQuestion].answer) {
-            if (user)
-            UpdateFrequency(user?.id, word)
+            if (email)
+            UpdateFrequency(email, word)
           
         }
 
@@ -93,7 +101,7 @@ export default function ReviewQuestions({user} : {user: User | null}) {
     return (
         <div className="flex flex-col p-5 bg-white text-black rounded-lg shadow-[0px_87px_78px_-39px_rgba(0,0,0,0.4)] w-full">
            
-            {!isQuizCompleted ? (
+            {!isQuizCompleted && questions ? (
                 <>
                 
                 <div className="flex items-center justify-between">
@@ -135,12 +143,7 @@ export default function ReviewQuestions({user} : {user: User | null}) {
                 <div className="text-center">
                     <h2 className="text-3xl font-bold text-green-500 mb-4">Congratulations!</h2>
                     
-                        <button
-                            onClick={() => window.location.reload()}
-                            className="mt-4 px-4 py-2 bg-green-600 text-white text-lg rounded"
-                        >
-                            Revise more words..
-                        </button>
+                        
                     
                 </div>
             
