@@ -239,7 +239,7 @@ export default function Page() {
                                 <p className="text-gray-700">{def.definition}</p>
                                 {def.example && (
                                   <p className="text-gray-500 italic mt-2 pl-2 border-l-2 border-purple-200">
-                                    "{def.example}"
+                                    &quot;{def.example}&quot;
                                   </p>
                                 )}
                               </motion.li>

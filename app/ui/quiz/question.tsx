@@ -1,11 +1,10 @@
 "use client";
 
 import Confetti from "react-confetti";
-import { type User } from '@supabase/supabase-js';
 import { UpdateScore } from "@/app/lib/data";
 import { useState, useEffect } from "react";
 import { FaTrophy, FaRedo, FaClock, FaCheckCircle, FaTimesCircle, FaBrain } from "react-icons/fa";
-import { useSession, signOut } from "next-auth/react"
+import { useSession } from "next-auth/react"
 import { redirect } from "next/navigation";
 
 type QuestionType = {
@@ -17,7 +16,7 @@ type QuestionType = {
   option_4: string;
 };
 
-export default function Question({ questions, user }: { questions: QuestionType[], user: User | null }) {
+export default function Question({ questions }: { questions: QuestionType[] }) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(10);
