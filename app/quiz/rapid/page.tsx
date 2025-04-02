@@ -1,7 +1,5 @@
 'use client'
 
-import { type User } from '@supabase/supabase-js'
-import { createClient } from '@/utils/supabase/client'
 
 import Question from "@/app/ui/quiz/question"
 import { useEffect, useState } from "react"
@@ -24,8 +22,7 @@ export default function Page() {
 
     const [questions, setQuestions] = useState<QuestionType[]>([]);
     const [loading, setLoading] = useState(true);
-    const [user, setUser] = useState<User | null>(null)
-
+    
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -35,13 +32,11 @@ export default function Page() {
                 setQuestions(questions)
 
                 // fetching user
-                const supabase = await createClient()
+               
 
-                const {
-                    data: { user },
-                    } = await supabase.auth.getUser()
                 
-                setUser(user)
+                
+               
                 
             } catch (error) {
               console.error('Error fetching data:', error);
@@ -61,7 +56,7 @@ export default function Page() {
     return(
         <div>
            
-                <Question questions={questions} user={user} />    
+                <Question questions={questions} />    
            
         </div>
     )
