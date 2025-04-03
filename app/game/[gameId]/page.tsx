@@ -354,6 +354,46 @@ try {
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-blue-50 to-purple-50 flex flex-col items-center justify-center p-4 overflow-hidden">
+      {/* Game Id section */}
+      <div 
+  className="group relative bg-indigo-100 text-indigo-800 text-sm font-medium px-3 py-1 rounded-full inline-flex items-center hover:bg-indigo-200 transition-colors cursor-pointer"
+  onClick={() => navigator.clipboard.writeText(gameId)}
+>
+  <span className="mr-1">Game ID:</span>
+  <span className="font-mono font-bold">{gameId}</span>
+  
+  {/* Copy indicator that appears on hover */}
+  <span className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity text-xs text-indigo-500 flex items-center">
+    <svg 
+      xmlns="http://www.w3.org/2000/svg" 
+      className="h-3 w-3 mr-1" 
+      fill="none" 
+      viewBox="0 0 24 24" 
+      stroke="currentColor"
+    >
+      <path 
+        strokeLinecap="round" 
+        strokeLinejoin="round" 
+        strokeWidth={2} 
+        d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" 
+      />
+    </svg>
+    Copy
+  </span>
+  
+  {/* Tooltip confirmation */}
+  <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+    Copied!
+    <svg 
+      className="absolute text-gray-800 h-2 w-full left-0 top-full" 
+      x="0px" 
+      y="0px" 
+      viewBox="0 0 255 255" 
+    >
+      <polygon className="fill-current" points="0,0 127.5,127.5 255,0" />
+    </svg>
+  </span>
+</div>
       {/* Score Section */}
       <div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg text-center mb-4 sm:mb-8 w-full max-w-md">
         <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Score</h2>
