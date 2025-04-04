@@ -419,7 +419,7 @@ try {
               </div>
             </div>
             <div className="text-base sm:text-lg font-bold text-purple-800">
-              0:{username !== P1user ? !isP1turn ? timeLeft : "00" : isP1turn ? "00" : timeLeft}
+              0:{username === P1user ? isP1turn ? timeLeft : "00" : isP1turn ? "00" : timeLeft}
             </div>
           </div>
         </div>
@@ -576,7 +576,7 @@ try {
               </div>
             </div>
             <div className="text-base sm:text-lg font-bold text-orange-800">
-              0:{username === P1user ? !isP1turn ? timeLeft : "00" : isP1turn ? "00" : timeLeft}
+              0:{username !== P1user ? isP1turn ? timeLeft : "00" : isP1turn ? "00" : timeLeft}
             </div>
           </div>
         </div>
