@@ -253,11 +253,7 @@ export async function fetchUserWords(email: string) {
 // this function fetches review questions 
 export async function fetchReviewQuestions(words: string[]) {
     const supabase = createClient()
-    let i: number = 0, n = 10, j : number = 0
-    console.log(words)
-    const questions = []
-    if (words.length < 10)
-        n = words.length
+   
     try {
         const questions = []; // Initialize array
         
