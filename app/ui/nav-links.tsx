@@ -8,7 +8,7 @@ const links = [
     { name: 'Home', href: '/home', icon: HomeIcon },
     { name: 'SayIt', href: '/game', icon: GlobeAltIcon },
     { name: 'Words', href: '/words', icon: BookmarkIcon },
-    { name: 'Quiz', href: '/quiz', icon: AcademicCapIcon },
+    { name: 'Quiz', href: '/quiz/lessons', icon: AcademicCapIcon },
     { name: 'Account', href: '/profile', icon: UserIcon }    
 ];
 

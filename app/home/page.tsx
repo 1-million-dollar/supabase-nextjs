@@ -3,14 +3,15 @@
 // pages/dictionary.tsx
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Head from 'next/head';
+
 import Link from 'next/link';
-import { FaBook, FaGamepad } from 'react-icons/fa';
+
 import { addSearchedWord, getQuestionId } from '../lib/data';
 
 import { createClient } from '@/utils/supabase/client';
 
 import { useSession } from "next-auth/react";
+
 
 // Types (same as before)
 interface Definition {
@@ -46,8 +47,10 @@ export default function Page() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [email, setEmail] = useState<string | null>(null)
+  
   const [id, setId] = useState<number | null>(null)
+
+  let email: string | null | undefined
 
   const supabase = createClient()
 
@@ -76,29 +79,24 @@ export default function Page() {
     }
   };
 
-  const playAudio = (audioUrl: string) => {
-    if (audioRef.current) {
-      audioRef.current.src = audioUrl;
-      audioRef.current.play();
-    }
-  };
+  const fetchData = async () => {
+    const id = await getQuestionId(word)
+    console.log(id)
+    setId(id)
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    fetchDefinition();
-    fetchData()
+    const { data, error } = await supabase
+      .from('new_words')
+      .select('email')
+      .ilike('word', word)
 
-    if(id == 0) {
-      addSearchedWord(word)
-      console.log("Data inserted successfully")
+    if (data) {
+      email = (data[0]?.email)
+      console.log("email after fetch", email)
     }
-    if (email === session?.user?.email) {
-      console.log('Duplicate found. Record already exists.');
-  
-    } else {
-      insertData()
+    if (error) {
+      console.log(error)
     }
-  };
+  }
 
   const insertData = async () => {
     const {data, error} = await supabase
@@ -112,6 +110,44 @@ export default function Page() {
       console.log(error)
     }
   }
+
+  const playAudio = (audioUrl: string) => {
+    if (audioRef.current) {
+      audioRef.current.src = audioUrl;
+      audioRef.current.play();
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    fetchDefinition();
+    fetchData();
+  
+   
+    
+    // check for repeated data and insert new data
+
+    fetchData().then(() => {
+      console.log("email before checking", email);
+      
+      if (id == 0) {
+        addSearchedWord(word).then(() => {
+          console.log("Data inserted successfully");
+        });
+      }
+      
+      if (email === session?.user?.email) {
+        console.log('Duplicate found. Record already exists.');
+      } else {
+        insertData();
+      }
+    }).catch(error => {
+      console.error("Error:", error);
+    });
+  }
+  
+  
+  
 
   // Animation variants
   const containerVariants = {
@@ -130,32 +166,14 @@ export default function Page() {
   };
 
   
-  const fetchData = async () => {
-    const id = await getQuestionId(word)
-    setId(id)
-
-    const { data, error } = await supabase
-      .from('new_words')
-      .select('email')
-      .eq('word', word)
-
-    if (data) {
-      setEmail(data[0]?.email)
-    }
-    if (error) {
-      console.log(error)
-    }
-  }
+  
   
 
   
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 py-12 px-4">
-      <Head>
-        <title>Linguo - Modern Dictionary App</title>
-        <meta name="description" content="Beautiful dictionary application with animations" />
-      </Head>
+    
 
       <audio ref={audioRef} className="hidden" />
 
@@ -165,58 +183,46 @@ export default function Page() {
         transition={{ duration: 0.5 }}
         className="max-w-3xl mx-auto"
       >
-        <div className="flex flex-row items-center justify-center mb-16 p-4 h-min bg-gray-100 gap-6 md:gap-4">
-  {/* Do Lessons Button */}
-  <Link href="/quiz">
-    <div className="group relative flex flex-col items-center justify-center p-2 md:p-4 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 rounded-xl shadow-lg cursor-pointer w-16 h-16 md:w-48 md:h-24 transition-all duration-300 hover:scale-105 hover:shadow-xl">
-      <FaBook className="text-white text-3xl md:text-3xl group-hover:text-blue-100 transition-all" />
-      <span className="font-bold text-center text-lg text-white hidden md:block">
-        Do Lessons
-      </span>
-    </div>
-  </Link>
+      
+      
 
-  {/* Play Game Button */}
-  <Link href="/game">
-    <div className="group relative flex flex-col items-center justify-center p-2 md:p-4 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 rounded-xl shadow-lg cursor-pointer w-16 h-16 md:w-48 md:h-24 transition-all duration-300 hover:scale-105 hover:shadow-xl">
-      <FaGamepad className="text-white text-3xl md:text-3xl group-hover:text-green-100 transition-all" />
-      <span className="font-bold text-center text-lg text-white hidden md:block">
-        Play Game
-      </span>
-    </div>
-  </Link>
-</div>
 
-        <motion.form
-          onSubmit={handleSubmit}
-          className="mb-12"
-          whileHover={{ scale: 1.01 }}
-        >
-          <div className="flex gap-2 shadow-lg rounded-full overflow-hidden">
-            <input
-              type="text"
-              value={word}
-              onChange={(e) => setWord(e.target.value)}
-              placeholder="Search any word..."
-              className="flex-1 p-4 text-lg border-0 focus:ring-2 focus:ring-purple-500 focus:outline-none rounded-l-full"
-            />
-            <button
-              type="submit"
-              disabled={loading}
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 text-lg font-medium rounded-r-full transition-all duration-300 disabled:opacity-70"
-            >
-              {loading ? (
-                <span className="flex items-center">
-                  <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Searching
-                </span>
-              ) : 'Search'}
-            </button>
-          </div>
-        </motion.form>
+
+<motion.form
+  onSubmit={async (e) => {
+    e.preventDefault();
+    await handleSubmit(e);
+    setWord("");
+  }}
+  className="mb-12 w-full px-4"
+  whileHover={{ scale: 1.01 }}
+>
+  <div className="flex gap-2 shadow-lg rounded-full overflow-hidden w-full">
+    <input
+      type="text"
+      value={word}
+      onChange={(e) => setWord(e.target.value)}
+      placeholder="Search any word..."
+      className="flex-1 min-w-0 p-3 sm:p-4 text-base sm:text-lg border-0 focus:ring-2 focus:ring-purple-500 focus:outline-none rounded-l-full"
+    />
+    <button
+      type="submit"
+      disabled={loading || !word.trim()}
+      className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 sm:px-6 text-base sm:text-lg font-medium rounded-r-full transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed whitespace-nowrap"
+    >
+      {loading ? (
+        <span className="flex items-center">
+          <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Searching
+        </span>
+      ) : 'Search'}
+    </button>
+  </div>
+</motion.form>
+
 
         <AnimatePresence>
           {error && (
@@ -371,6 +377,82 @@ export default function Page() {
             </motion.div>
           )}
         </AnimatePresence>
+        <div className="flex flex-col gap-4 p-4">
+  {/* Continue Lessons Card */}
+  <Link href='/quiz/lessons'>
+    <div className="bg-gradient-to-r from-[#6E45E2] to-[#89D4CF] rounded-xl p-5 shadow-lg hover:shadow-xl transition-all duration-300 text-white w-full">
+        <div className="flex items-center gap-4">
+          <div className="bg-white/20 p-3 rounded-xl">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+          <div>
+            <h3 className="text-lg font-bold">Lessons</h3>
+            <p className="text-sm opacity-90 mt-1">Resume your learning journey</p>
+          </div>
+        </div>
+      </div>
+  </Link>
+    
+ 
+  
+
+  {/* Revise Words Card */}
+  <Link href='/quiz/review'>
+    <div className="bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] rounded-xl p-5 shadow-lg hover:shadow-xl transition-all duration-300 text-white w-full">
+      <div className="flex items-center gap-4">
+        <div className="bg-white/20 p-3 rounded-xl">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v12m-3-9h6" />
+          </svg>
+        </div>
+        <div>
+          <h3 className="text-lg font-bold">Revise</h3>
+          <p className="text-sm opacity-90 mt-1">Strengthen your word knowledge</p>
+        </div>
+      </div>
+    </div>
+  </Link>
+  
+
+  {/* Vocab Quiz Card */}
+  <Link href='/quiz/rapid'>
+    <div className="bg-gradient-to-r from-[#4ECDC4] to-[#2B8BBA] rounded-xl p-5 shadow-lg hover:shadow-xl transition-all duration-300 text-white w-full">
+      <div className="flex items-center gap-4">
+        <div className="bg-white/20 p-3 rounded-xl">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+        </div>
+        <div>
+          <h3 className="text-lg font-bold">Quiz</h3>
+          <p className="text-sm opacity-90 mt-1">Test your language skills</p>
+        </div>
+      </div>
+    </div>
+  </Link>
+  
+
+  {/* Play Card */}
+  <Link href='/game'>
+    <div className="bg-gradient-to-r from-[#FF9A8B] to-[#FF6B95] rounded-xl p-5 shadow-lg hover:shadow-xl transition-all duration-300 text-white w-full">
+      <div className="flex items-center gap-4">
+        <div className="bg-white/20 p-3 rounded-xl">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+          </svg>
+        </div>
+        <div>
+          <h3 className="text-lg font-bold">Play</h3>
+          <p className="text-sm opacity-90 mt-1">Learn through play</p>
+        </div>
+      </div>
+    </div>
+  </Link>
+  
+</div>
+        <div>leaderboard</div>
       </motion.div>
     </div>
   );

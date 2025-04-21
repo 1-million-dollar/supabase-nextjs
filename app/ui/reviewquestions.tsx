@@ -40,6 +40,7 @@ export default function ReviewQuestions() {
                     console.log('Fetching data...');
                     if (email) {
                         const words = await fetchUserWords(email)
+                        console.log(words)
                         setQuestions(await fetchReviewQuestions(words))
                     }
                     
@@ -73,9 +74,9 @@ export default function ReviewQuestions() {
       };
 
       const handleNextQuestion = () => {
-        if (selectedOption === questions[currentQuestion].answer) {
+        if (selectedOption === questions[currentQuestion].word) {
             if (email)
-            UpdateFrequency(email, word)
+                UpdateFrequency(email, correctAnswer)
           
         }
 
@@ -105,7 +106,7 @@ export default function ReviewQuestions() {
                 <>
                 
                 <div className="flex items-center justify-between">
-                    <p className="text-[rgb(49,49,49)] text-base font-extrabold leading-4">What is the meaning of {word} ?</p>
+                    <p className="text-[rgb(49,49,49)] text-base leading-4">What is the meaning of <b>{word}</b> ?</p>
                     
                 </div>
                 <div>

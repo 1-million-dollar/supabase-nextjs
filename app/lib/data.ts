@@ -237,7 +237,7 @@ export async function fetchUserWords(email: string) {
         .from("new_words")
         .select(`word`)
         .eq('email', email)
-        .order('frequency', { ascending: true})
+        .order('created_at', { ascending: false})
 
     if (error) {
         return []
@@ -253,30 +253,38 @@ export async function fetchUserWords(email: string) {
 // this function fetches review questions 
 export async function fetchReviewQuestions(words: string[]) {
     const supabase = createClient()
-    let i: number = 0, n = 10, j=0
+    let i: number = 0, n = 10, j : number = 0
+    console.log(words)
     const questions = []
     if (words.length < 10)
         n = words.length
-    while (i < n) {
-        const {data, error} = await supabase
-            .from('question')
-            .select('word, answer, option_1, option_2, option_3, option_4')
-            .eq('word', words[i])
+    try {
+        const questions = []; // Initialize array
         
-        if (error) {
-            console.log(error)
-        }
-        if (data) {
-            if (data[0] !== undefined) {
-                questions[j] = data[0]
-                j++
+        // Better to use for...of loop for async operations
+        for (const word of words) {
+            const { data, error } = await supabase
+                .from('question')
+                .select('word, answer, option_1, option_2, option_3, option_4')
+                .ilike('word', word);
+            
+            if (error) {
+                console.error('Error fetching question:', error);
+                continue; // Skip to next word if error
+            }
+            
+            if (data && data[0]) {
+                console.log('Found question:', data[0]);
+                questions.push(data[0]); // Add to array
             }
         }
-        i++
-       
+        
+        console.log('All questions:', questions);
+        return questions;
+    } catch (err) {
+        console.error('Error in fetchQuestions:', err);
+        return []; // Return empty array on error
     }
-
-    return questions
 }
 // this function updates the score of the user
 export async function UpdateScore(email: string, score: number,correct: number, wrong: number) {
@@ -303,21 +311,30 @@ export async function UpdateScore(email: string, score: number,correct: number, 
 export async function UpdateFrequency(email: string, word: string) {
     const supabase = createClient()
 
-    const {data} = await supabase
+    console.log(email, word)
+
+    const {data, error} = await supabase
         .from('new_words')
         .select('frequency')
         .eq('email', email)
-        .eq('word', word)
+        .ilike('word', word)
+        
 
     
     if (data) {
-        const new_freq = data[0].frequency + 1
+        console.log(data)
+        const new_freq = data[0]?.frequency + 1
+        console.log(new_freq)
+
         
         const {error} = await supabase
-            .from('words')
+            .from('new_words')
             .update({'frequency': new_freq})
             .eq('email', email)
-            .eq('word', word)
+            .ilike('word', word)
+        console.log(error)
+    }
+    if (error) {
         console.log(error)
     }
 
@@ -345,7 +362,7 @@ export async function getQuestionId(word: string) {
     const { data, error } = await (await supabase)
         .from('question')
         .select('id')
-        .eq('word', word);
+        .ilike('word', word);
 
     if (error) {
         console.log(error)
@@ -362,7 +379,7 @@ export async function getWordTime(word : string, email: string) {
     const { data , error } = await( await supabase)
         .from('new_words')
         .select('created_at')
-        .eq('word', word)
+        .ilike('word', word)
         .eq('email', email)
 
     if (data) {
