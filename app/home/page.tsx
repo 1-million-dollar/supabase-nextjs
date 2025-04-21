@@ -68,8 +68,32 @@ export default function Page() {
       if (!response.ok) {
         throw new Error('Word not found');
       }
+
+      if(response.ok) {
+        // check for repeated data and insert new data
+
+    fetchData().then(() => {
+      console.log("email before checking", email);
+      
+      if (id == 0) {
+        addSearchedWord(word).then(() => {
+          console.log("Data inserted successfully");
+        });
+      }
+      
+      if (email === session?.user?.email) {
+        console.log('Duplicate found. Record already exists.');
+      } else {
+        insertData();
+      }
+    }).catch(error => {
+      console.error("Error:", error);
+    });
+      }
+     
       
       const data: DictionaryEntry[] = await response.json();
+      
       setEntries(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unknown error occurred');
@@ -121,29 +145,10 @@ export default function Page() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     fetchDefinition();
-    fetchData();
   
    
     
-    // check for repeated data and insert new data
-
-    fetchData().then(() => {
-      console.log("email before checking", email);
-      
-      if (id == 0) {
-        addSearchedWord(word).then(() => {
-          console.log("Data inserted successfully");
-        });
-      }
-      
-      if (email === session?.user?.email) {
-        console.log('Duplicate found. Record already exists.');
-      } else {
-        insertData();
-      }
-    }).catch(error => {
-      console.error("Error:", error);
-    });
+    
   }
   
   
