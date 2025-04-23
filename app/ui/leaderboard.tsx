@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from "react"
-import ProfilePhoto from "./profilephoto"
+
 import { getLearners } from "../lib/data"
 import Link from "next/link"
 
