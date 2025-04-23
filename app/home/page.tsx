@@ -12,6 +12,8 @@ import { createClient } from '@/utils/supabase/client';
 
 import { useSession } from "next-auth/react";
 
+import Leaderboard from '../ui/leaderboard';
+
 
 // Types (same as before)
 interface Definition {
@@ -457,7 +459,7 @@ export default function Page() {
   </Link>
   
 </div>
-        <div>leaderboard</div>
+        <Leaderboard />
       </motion.div>
     </div>
   );

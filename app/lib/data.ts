@@ -340,8 +340,8 @@ export async function getLearners() {
     const supabase = createClient()
 
     const {data, error} = await supabase
-                    .from('profiles')
-                    .select('id, full_name, avatar_url, points, correct, wrong')
+                    .from('users')
+                    .select('id, name, points, correct, wrong')
                     .order('points', {ascending : false})
                     .limit(5)
     

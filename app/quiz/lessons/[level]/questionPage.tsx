@@ -88,8 +88,10 @@ export default function QuestionPage({questions, level} : {questions: QuestionTy
     const restartQuiz = () => {
 
         if (score === questions.length && email) {
-            UpdateLevel(level, email)
-            redirect(`/quiz/lessons/`)
+            UpdateLevel(level, email).then(() => {
+              redirect(`/quiz/lessons/`)
+            })
+            
           }
        
 
